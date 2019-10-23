@@ -1,0 +1,1 @@
+{"explore_name": "sf__leads", "explore_joins": ["sf__users"], "conn": "snowflake_production"}

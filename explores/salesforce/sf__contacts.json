@@ -1,0 +1,1 @@
+{"conn": "data_warehouse", "explore": ["explore: sf__contacts {", "  label: \"Contacts\"", "  view_label: \"Contacts\"", "}", ""], "explore_name": "sf__contacts"}

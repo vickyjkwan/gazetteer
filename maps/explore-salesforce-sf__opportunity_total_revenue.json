@@ -1,0 +1,1 @@
+{"explore_name": "sf__opportunity_total_revenue", "explore_joins": ["sf__opportunity_total_revenue", "sf__accounts", "sf__opportunities", "sf__opportunity_products", "finance_revenue_forecast", "sf__leads"], "conn": "data_warehouse"}

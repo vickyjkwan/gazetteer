@@ -1,0 +1,1 @@
+{"explore_name": "sf__campaign_members", "explore_joins": ["sf__campaign_members", "sf__campaigns", "sf__leads", "sf__contacts", "reghub_dockeruser", "ucp_licensing", "ucp_usage"], "conn": "data_warehouse"}

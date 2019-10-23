@@ -1,0 +1,1 @@
+{"conn": "snowflake_production", "explore": ["explore: sf__opportunity_contact_role_counts {", "  label: \"Opportunity Contact Role Counts\"", "  description: \"Explore number of contacts associated with an opportunity\"", "}", ""], "explore_name": "sf__opportunity_contact_role_counts"}

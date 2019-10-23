@@ -1,0 +1,1 @@
+{"explore_name": "current_customer_buying_patterns", "explore_joins": ["adhoc_transposed_customer_events"], "conn": "data_warehouse"}

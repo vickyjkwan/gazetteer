@@ -1,0 +1,1 @@
+{"explore_name": "sf__product_telemetry", "explore_joins": ["sf__accounts", "sf__accounts{", "sf__opportunities", "sf__opportunity_products", "sf__contacts_to_reghub_to_license", "snowflake_reghub_dockeruser", "ucp_licensing", "ucp_usage", "ucp_client_info", "ucp_usage_sfdc", "sf__contacts", "sf__users", "sf__leads"], "conn": "snowflake_medium"}

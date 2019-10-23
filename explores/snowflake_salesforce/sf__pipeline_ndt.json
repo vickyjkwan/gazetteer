@@ -1,0 +1,1 @@
+{"conn": "snowflake_production", "explore": ["explore: sf__pipeline_ndt {", "  persist_with: snowflake_sfdc_oppty_data", "  label: \"Pipeline\"", "  view_label: \"Pipeline\"", "}", ""], "explore_name": "sf__pipeline_ndt"}

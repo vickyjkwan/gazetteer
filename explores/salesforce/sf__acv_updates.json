@@ -1,0 +1,1 @@
+{"conn": "data_warehouse", "explore": ["explore: sf__acv_updates {", "  view_label: \"ACV Updates\"", "  label: \"ACV Updates\"", "  hidden: yes", "}"], "explore_name": "sf__acv_updates"}

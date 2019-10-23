@@ -1,0 +1,4 @@
+{"view_name": "middle_contacts",
+    "source_table": "bottom_contacts",
+    "view_type": "extension"
+    }

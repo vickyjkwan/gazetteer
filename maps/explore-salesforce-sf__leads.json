@@ -1,0 +1,1 @@
+{"explore_name": "sf__leads", "explore_joins": ["sf__leads", "sf__leads_converted", "sf__users", "sf__accounts", "sf__users", "-", "sf__opportunities", "sf__opportunity_products", "sf__users", "reghub_dockeruser", "ucp_licensing", "ucp_usage", "marketo_leads_segment", "marketo_lead_activities"], "conn": "data_warehouse"}

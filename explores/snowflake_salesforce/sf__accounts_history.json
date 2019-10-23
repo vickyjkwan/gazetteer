@@ -1,0 +1,1 @@
+{"conn": "snowflake_production", "explore": ["explore: sf__accounts_history {", "  view_label: \"Accounts Snapshot\"", "  label: \"Accounts Snapshot\"", "}", ""], "explore_name": "sf__accounts_history"}

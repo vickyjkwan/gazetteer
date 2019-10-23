@@ -1,0 +1,1 @@
+{"explore_name": "sf__events", "explore_joins": ["sf__events", "sf__accounts", "sf__users"], "conn": "data_warehouse"}

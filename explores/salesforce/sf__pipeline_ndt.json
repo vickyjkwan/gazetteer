@@ -1,0 +1,1 @@
+{"conn": "data_warehouse", "explore": ["explore: sf__pipeline_ndt {", "  persist_for: \"24 hours\"", "  label: \"Pipeline\"", "  view_label: \"Pipeline\"", "}", ""], "explore_name": "sf__pipeline_ndt"}

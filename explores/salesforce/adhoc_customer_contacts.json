@@ -1,0 +1,1 @@
+{"conn": "data_warehouse", "explore": ["explore: adhoc_customer_contacts {", "  view_label: \"Customer Contacts\"", "  label: \"Customer Contacts\"", "}", "", "include: \"sf__acv_updates.view.lkml\""], "explore_name": "adhoc_customer_contacts"}

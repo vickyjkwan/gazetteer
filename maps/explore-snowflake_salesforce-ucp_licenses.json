@@ -1,0 +1,1 @@
+{"explore_name": "ucp_licenses", "explore_joins": ["ucp_licensing", "snowflake_reghub_dockeruser", "ucp_usage", "ucp_client_info", "dtr_server_stats", "sf__accounts", "sf__opportunities", "sf__accounts", "sf__cases", "sf__opportunity_products", "sf__leads"], "conn": "snowflake_production"}

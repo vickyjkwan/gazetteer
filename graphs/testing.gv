@@ -1,0 +1,13 @@
+digraph sf__accounts {
+	sf__accounts [label=sf__accounts]
+	view_sf__accounts [label=view_sf__accounts]
+	sf__accounts -> view_sf__accounts
+	view_sf__users [label=view_sf__users]
+	sf__accounts -> view_sf__users
+	view_sf__contacts [label=view_sf__contacts]
+	sf__accounts -> view_sf__contacts
+	view_sf__cases [label=view_sf__cases]
+	sf__accounts -> view_sf__cases
+	view_sf__users [label=view_sf__users]
+	sf__accounts -> view_sf__users
+}

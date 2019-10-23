@@ -1,0 +1,1 @@
+{"conn": "data_warehouse", "explore": ["explore: current_customer_buying_patterns {", "  from: adhoc_transposed_customer_events", "  hidden: yes", "}", "", "include: \"adhoc_customer_contacts.view.lkml\""], "explore_name": "current_customer_buying_patterns"}

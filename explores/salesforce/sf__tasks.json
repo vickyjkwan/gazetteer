@@ -1,0 +1,1 @@
+{"conn": "data_warehouse", "explore": ["explore: sf__tasks {", "  label: \"Tasks\"", "  view_label: \"Tasks\"", "  join: sf__accounts {", "    view_label: \"Accounts\"", "    sql_on: ${sf__tasks.account_id} = ${sf__accounts.id} ;;", "    relationship: many_to_one", "  }", "}", ""], "explore_name": "sf__tasks"}

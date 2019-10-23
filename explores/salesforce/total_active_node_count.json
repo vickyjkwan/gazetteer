@@ -1,0 +1,1 @@
+{"conn": "data_warehouse", "explore": ["explore: total_active_node_count{", "  # defined in the sf__accounts view", "}", ""], "explore_name": "total_active_node_count"}

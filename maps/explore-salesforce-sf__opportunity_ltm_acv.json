@@ -1,0 +1,1 @@
+{"explore_name": "sf__opportunity_ltm_acv", "explore_joins": ["sf__opportunity_ltm_acv", "sf__accounts", "finance_revenue_forecast", "sf__opportunities_extended", "sf__opportunities_extended", "sf__opportunity_products", "sf__leads", "stripe_charges"], "conn": "data_warehouse"}

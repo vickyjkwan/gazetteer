@@ -1,0 +1,1 @@
+{"explore_name": "sf__leads_and_contacts", "explore_joins": ["sf__leads_and_contacts", "sf__leads", "sf__leads_converted", "sf__contacts", "sf__accounts", "sf__opportunity_contact_role", "sf__opportunities", "sf__opportunity_products", "sf__accounts", "sf__users", "sf__deal_registrations", "sf__campaign_members", "sf__campaigns"], "conn": "data_warehouse"}

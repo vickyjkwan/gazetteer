@@ -1,0 +1,37 @@
+digraph sf__accounts {
+	sf__accounts [label=sf__accounts]
+	sf__accounts [label=sf__accounts]
+	sf__accounts -> sf__accounts
+	"view-sf__accounts-sfbase__accounts.json" [label="view-sf__accounts-sfbase__accounts.json"]
+	sf__accounts -> "view-sf__accounts-sfbase__accounts.json"
+	"view-sf__accounts-sf__accounts.json" [label="view-sf__accounts-sf__accounts.json"]
+	sf__accounts -> "view-sf__accounts-sf__accounts.json"
+	"view-sf__accounts-snowflake_sf__accounts.json" [label="view-sf__accounts-snowflake_sf__accounts.json"]
+	sf__accounts -> "view-sf__accounts-snowflake_sf__accounts.json"
+	"view-sf__accounts-total_active_node_count.json" [label="view-sf__accounts-total_active_node_count.json"]
+	sf__accounts -> "view-sf__accounts-total_active_node_count.json"
+	sf__users [label=sf__users]
+	sf__accounts -> sf__users
+	"view-sf__users-sfbase__users.json" [label="view-sf__users-sfbase__users.json"]
+	sf__users -> "view-sf__users-sfbase__users.json"
+	"view-sf__users-sf__users.json" [label="view-sf__users-sf__users.json"]
+	sf__users -> "view-sf__users-sf__users.json"
+	sf__contacts [label=sf__contacts]
+	sf__accounts -> sf__contacts
+	"view-sf__contacts-sf__contacts.json" [label="view-sf__contacts-sf__contacts.json"]
+	sf__contacts -> "view-sf__contacts-sf__contacts.json"
+	"view-sf__contacts-sfbase__contacts.json" [label="view-sf__contacts-sfbase__contacts.json"]
+	sf__contacts -> "view-sf__contacts-sfbase__contacts.json"
+	sf__cases [label=sf__cases]
+	sf__accounts -> sf__cases
+	"view-sf__cases-sf__cases.json" [label="view-sf__cases-sf__cases.json"]
+	sf__cases -> "view-sf__cases-sf__cases.json"
+	"view-sf__cases-sfbase__cases.json" [label="view-sf__cases-sfbase__cases.json"]
+	sf__cases -> "view-sf__cases-sfbase__cases.json"
+	sf__users [label=sf__users]
+	sf__accounts -> sf__users
+	"view-sf__users-sfbase__users.json" [label="view-sf__users-sfbase__users.json"]
+	sf__users -> "view-sf__users-sfbase__users.json"
+	"view-sf__users-sf__users.json" [label="view-sf__users-sf__users.json"]
+	sf__users -> "view-sf__users-sf__users.json"
+}

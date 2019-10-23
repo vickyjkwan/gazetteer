@@ -1,0 +1,1 @@
+{"conn": "data_warehouse", "explore": ["explore: sf__products {", "  label: \"Products\"", "  view_label: \"Products\"", "}", "", "include: \"github_comments_poc.view\""], "explore_name": "sf__products"}

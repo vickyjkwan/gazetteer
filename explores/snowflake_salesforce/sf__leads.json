@@ -1,0 +1,1 @@
+{"conn": "snowflake_production", "explore": ["explore: sf__leads {", "  # Extending makes this explore visible", "  extends: [sf__leads_base]", "  join: lead_owners {", "    from: sf__users", "    sql_on: ${sf__leads.owner_id} = ${lead_owners.id} ;;", "    relationship: one_to_one", "  }", "}", ""], "explore_name": "sf__leads"}

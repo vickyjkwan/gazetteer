@@ -1,0 +1,1 @@
+{"conn": "data_warehouse", "explore": ["explore: github_comments_poc {", "  hidden: yes", "}", "", "include: \"adhoc_transposed_customer_events.view.lkml\""], "explore_name": "github_comments_poc"}
