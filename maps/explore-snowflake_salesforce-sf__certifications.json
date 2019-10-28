@@ -1,1 +1,1 @@
-{"explore_name": "sf__certifications", "explore_joins": ["sf__certifications", "sf__certification_account", "sf__certification_oppty", "sf__accounts", "sf__opportunities", "sf__opportunity_products", "join:"], "conn": "snowflake_production"}
+{"explore_name": "sf__certifications", "explore_joins": ["sf__opportunity_products", "sf__opportunities", "sf__certification_account", "join:", "sf__accounts", "sf__certification_oppty", "sf__certifications"], "conn": "snowflake_production"}

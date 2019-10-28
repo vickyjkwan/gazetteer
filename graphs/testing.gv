@@ -1,0 +1,51 @@
+digraph sf__accounts {
+	sf__accounts [label=sf__accounts]
+	view_sf__accounts [label=view_sf__accounts]
+	sf__accounts -> view_sf__accounts
+	base_view_sfbase__accounts [label=base_view_sfbase__accounts]
+	view_sf__accounts -> base_view_sfbase__accounts
+	"Redshift.salesforce.accounts" [label="Redshift.salesforce.accounts"]
+	base_view_sfbase__accounts -> "Redshift.salesforce.accounts"
+	base_view_sf__accounts [label=base_view_sf__accounts]
+	view_sf__accounts -> base_view_sf__accounts
+	"Redshift.salesforce.accounts" [label="Redshift.salesforce.accounts"]
+	base_view_sf__accounts -> "Redshift.salesforce.accounts"
+	base_view_snowflake_sf__accounts [label=base_view_snowflake_sf__accounts]
+	view_sf__accounts -> base_view_snowflake_sf__accounts
+	"SEGMENT.SALESFORCE.ACCOUNTS" [label="SEGMENT.SALESFORCE.ACCOUNTS"]
+	base_view_snowflake_sf__accounts -> "SEGMENT.SALESFORCE.ACCOUNTS"
+	base_view_total_active_node_count [label=base_view_total_active_node_count]
+	view_sf__accounts -> base_view_total_active_node_count
+	"derived table" [label="derived table"]
+	base_view_total_active_node_count -> "derived table"
+	view_sf__users [label=view_sf__users]
+	sf__accounts -> view_sf__users
+	base_view_sfbase__users [label=base_view_sfbase__users]
+	view_sf__users -> base_view_sfbase__users
+	"Redshift.salesforce.users" [label="Redshift.salesforce.users"]
+	base_view_sfbase__users -> "Redshift.salesforce.users"
+	base_view_sf__users [label=base_view_sf__users]
+	view_sf__users -> base_view_sf__users
+	"Redshift.salesforce.users" [label="Redshift.salesforce.users"]
+	base_view_sf__users -> "Redshift.salesforce.users"
+	view_sf__cases [label=view_sf__cases]
+	sf__accounts -> view_sf__cases
+	base_view_sf__cases [label=base_view_sf__cases]
+	view_sf__cases -> base_view_sf__cases
+	"Redshift.salesforce.cases" [label="Redshift.salesforce.cases"]
+	base_view_sf__cases -> "Redshift.salesforce.cases"
+	base_view_sfbase__cases [label=base_view_sfbase__cases]
+	view_sf__cases -> base_view_sfbase__cases
+	"Redshift.salesforce.cases" [label="Redshift.salesforce.cases"]
+	base_view_sfbase__cases -> "Redshift.salesforce.cases"
+	view_sf__contacts [label=view_sf__contacts]
+	sf__accounts -> view_sf__contacts
+	base_view_sf__contacts [label=base_view_sf__contacts]
+	view_sf__contacts -> base_view_sf__contacts
+	"Redshift.salesforce.contacts" [label="Redshift.salesforce.contacts"]
+	base_view_sf__contacts -> "Redshift.salesforce.contacts"
+	base_view_sfbase__contacts [label=base_view_sfbase__contacts]
+	view_sf__contacts -> base_view_sfbase__contacts
+	"Redshift.salesforce.contacts" [label="Redshift.salesforce.contacts"]
+	base_view_sfbase__contacts -> "Redshift.salesforce.contacts"
+}

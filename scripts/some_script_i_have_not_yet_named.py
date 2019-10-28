@@ -51,7 +51,7 @@ def get_conn_db(explore, connection_map):
     return provider, database
 
 ####### need to add NDT, and derived table ################
-def get_true_source(view_payload, explore, connection_map):
+def get_true_source(dir_path, view_payload, explore, connection_map, view_map):
     
     if isinstance(view_payload, dict):
 
@@ -60,7 +60,7 @@ def get_true_source(view_payload, explore, connection_map):
             new_view_name = look_up_target_view(view_payload['source_table'], view_map=view_map)
             with open(f'{dir_path}/../maps/{new_view_name}', 'r') as f:
                 new_view_payload = json.load(f)
-            return get_true_source(new_view_payload, explore, connection_map)
+            return get_true_source(dir_path, new_view_payload, explore, connection_map, view_map)
             
         elif view_payload['view_type'] == 'sql_table_name': 
 
@@ -75,7 +75,10 @@ def get_true_source(view_payload, explore, connection_map):
                 
                 else:
                     provider, database = get_conn_db(explore=explore, connection_map=connection_map)
-                    true_source = f'{provider}.{database}.{source}'
+                    if len(source.split('.')) == 2:
+                        true_source = f'{provider}.{source}'
+                    elif len(source.split('.')) == 1:
+                        true_source = f'{provider}.{database}.{source}'
 
         elif view_payload['view_type'] == 'derived_table':
             true_source = 'derived table'
@@ -103,37 +106,48 @@ def get_true_source(view_payload, explore, connection_map):
     #     print(source)
 
     
-if __name__ == "__main__":
+def main():
     start = time.process_time()
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
     logging.basicConfig()
     logging.getLogger().setLevel(logging.INFO)
     
-    connection_map = get_connections.main(domain='https://docker.looker.com:19999', url='/api/3.1/connections')
+    # connection_map = get_connections.main(domain='https://docker.looker.com:19999', url='/api/3.1/connections')
+    connection_map = {  'hub': {'database': 'accounts', 'type': 'PostgreSQL'},
+                        'data_warehouse': {'database': 'salesforce', 'type': 'Redshift'},
+                        'snowflake_production': {'database': 'PRODUCTION', 'type': 'Snowflake'},
+                        'snowflake_medium': {'database': 'SEGMENT', 'type': 'Snowflake'}}
 
     with open(f'{dir_path}/../maps/explore-salesforce-sf__accounts.json', 'r') as f:
         explore = json.load(f)
 
-    d = dict()
+    view_content = dict()
     view_map = dict()
     for view in os.listdir(f'{dir_path}/../maps'):
         if view.startswith('view'):
             view_map[view.split('-')[2].split('.')[0]] = view
             with open(f'{dir_path}/../maps/{view}','r') as f:
                 payload = json.load(f)
-                d[payload['view_name']] = payload
+                view_content[payload['view_name']] = payload
 
     source_payload = dict()
-    for k,v in d.items():
-        logging.info(f"Processing View {v['view_name']}...")
-        view_name, source_table = get_true_source(v, explore=explore, connection_map=connection_map)
-        print(f"view name: {v['view_name']}, source: {source_table}")
-        source_payload[v['view_name']] = source_table
+    for view_name,view_payload in view_content.items():
+        logging.info(f"Processing View source {view_payload['view_name']}...")
+        if view_name in explore['explore_joins']:
+            base_view_name, source_table = get_true_source(dir_path, view_payload, explore=explore, connection_map=connection_map, view_map=view_map)
+            print(f"view name: {view_name} , base view name: {view_payload['view_name']}, source: {source_table}")
+            source_payload[view_name] = dict()
+            source_payload[view_name]['view_name'] = view_payload['view_name']
+            source_payload[view_name]['base_view_name'] = source_table  
 
-    with open(f"{dir_path}/../maps/{explore['explore_name']}-source.json", 'w') as f:
+    with open(f"{dir_path}/../maps/explore_{explore['explore_name']}-source.json", 'w') as f:
         json.dump(source_payload, f)
 
     end = time.process_time()
 
     logging.info(f'Completed process in {end-start} seconds.')   
+
+
+if __name__ == "__main__":
+    main()

@@ -100,7 +100,7 @@ def divider(explore_list):
     return counter_list
 
 
-def parser(explore_list, loc_list):
+def parsing_explore_lines(explore_list, loc_list):
     """
     This function parses a list of explore lines into a grouped structure of explore lines.
 
@@ -153,17 +153,15 @@ def trace_joins(grouped_explore):
 
     :return: a list representing all the joined base view names.
     """
-    joins = []
+    joins = set()
     for clause in grouped_explore:
-        joins.append(trace_base(clause))
+        joins.add(trace_base(clause))
 
     return joins
 
 
 def parse_explores(dir_path):
     
-    # dir_path = os.path.dirname(os.path.realpath(__file__))
-
     os.system(f'rm {dir_path}/.DS_Store {dir_path}/../explores/.DS_Store')
     
     for model_name in os.listdir(f'{dir_path}/../explores'):
@@ -182,7 +180,7 @@ def parse_explores(dir_path):
 
             if len(loc_list) > 1:
                 # parse the raw list, generate a nested and well grouped list representing the explore and join structure
-                grouped_explore = parser(explore_list, loc_list)
+                grouped_explore = parsing_explore_lines(explore_list, loc_list)
                 # generate a list of all joined base view names
                 explore_joins = trace_joins(grouped_explore)
             else: 
@@ -190,7 +188,7 @@ def parse_explores(dir_path):
 
             explore_dict = dict()
             explore_dict['explore_name'] = explore_name
-            explore_dict['explore_joins'] = explore_joins
+            explore_dict['explore_joins'] = list(explore_joins)
             explore_dict['conn'] = model['conn']
 
             explore_json = json.dumps(explore_dict)
@@ -297,3 +295,4 @@ def parse_views(dir_path):
             f = open(f'{dir_path}/../maps/view-{view_folder}-{view}', "w")
             f.write(result_json)
             f.close()
+            
