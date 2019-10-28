@@ -1,1 +1,1 @@
-{"explore_name": "sf__accounts", "explore_joins": ["sf__accounts", "sf__users", "sf__cases", "sf__contacts"], "conn": "data_warehouse"}
+{"explore_name": "sf__accounts", "explore_joins": ["sf__cases", "sf__users", "sf__accounts", "sf__contacts"], "conn": "data_warehouse"}

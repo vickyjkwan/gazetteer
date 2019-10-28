@@ -3,36 +3,7 @@ import os
 import re
 import get_connections
 import logging
-# from multiprocessing import Pool
 import time
-
-# connection_map = {'hub': {'database': 'accounts', 'type': 'PostgreSQL'}}
-
-# explore = {'explore_name': 'sf__accounts',
-#     'explore_joins': ['sf__accounts',
-#     'sf__users',
-#     'sf__contacts',
-#     'sf__cases',
-#     'sf__users'],
-#     'conn': 'data_warehouse'
-#     }
-
-# view_payload_1 = {'view_name': 'sf__contacts',
-#     'source_table': 'sfbase__contacts',
-#     'view_type': 'extension'
-#     }
-
-# view_map = {'sfbase__accounts': 'view-sf__accounts-sfbase__accounts.json',
-#     'sf__accounts': 'view-sf__accounts-sf__accounts.json',
-#     'snowflake_sf__accounts': 'view-sf__accounts-snowflake_sf__accounts.json',
-#     'total_active_node_count': 'view-sf__accounts-total_active_node_count.json',
-#     'sf__cases': 'view-sf__cases-sf__cases.json',
-#     'sfbase__users': 'view-sf__users-sfbase__users.json',
-#     'sf__contacts': 'view-sf__contacts-sf__contacts.json',
-#     'sfbase__cases': 'view-sf__cases-sfbase__cases.json',
-#     'sf__users': 'view-sf__users-sf__users.json',
-#     'sfbase__contacts': 'view-sf__contacts-sfbase__contacts.json'
-#     }
 
 
 def look_up_target_view(source_view_name, view_map):
@@ -88,23 +59,6 @@ def get_true_source(dir_path, view_payload, explore, connection_map, view_map):
 
     return view_payload['view_name'], true_source
 
-
-# def view_source_mapping():
-    # 0.11049900000000001 for 100 runs
-    # for k,v in d.items():
-    #     logging.info(f"Processing View {v['view_name']}...")
-    #     view_name, source_table = get_true_source(v, explore=explore, connection_map=connection_map)
-    #     print(f'view name: {view_name}, source: {source_table}')
-
-    # 0.710763 for 100 runs
-    # k,v = zip(*d.items())
-    # args = []
-    # for view in v:
-    #     args.append((view, explore, connection_map))
-    # with Pool(processes=2) as pool:
-    #     source = pool.starmap(get_true_source, args)
-    #     print(source)
-
     
 def main():
     start = time.process_time()
@@ -113,11 +67,11 @@ def main():
     logging.basicConfig()
     logging.getLogger().setLevel(logging.INFO)
     
-    # connection_map = get_connections.main(domain='https://docker.looker.com:19999', url='/api/3.1/connections')
-    connection_map = {  'hub': {'database': 'accounts', 'type': 'PostgreSQL'},
-                        'data_warehouse': {'database': 'salesforce', 'type': 'Redshift'},
-                        'snowflake_production': {'database': 'PRODUCTION', 'type': 'Snowflake'},
-                        'snowflake_medium': {'database': 'SEGMENT', 'type': 'Snowflake'}}
+    connection_map = get_connections.main(domain='https://docker.looker.com:19999', url='/api/3.1/connections')
+    # connection_map = {  'hub': {'database': 'accounts', 'type': 'PostgreSQL'},
+    #                     'data_warehouse': {'database': 'salesforce', 'type': 'Redshift'},
+    #                     'snowflake_production': {'database': 'PRODUCTION', 'type': 'Snowflake'},
+    #                     'snowflake_medium': {'database': 'SEGMENT', 'type': 'Snowflake'}}
 
     with open(f'{dir_path}/../maps/explore-salesforce-sf__accounts.json', 'r') as f:
         explore = json.load(f)
@@ -136,9 +90,9 @@ def main():
         logging.info(f"Processing View source {view_payload['view_name']}...")
         if view_name in explore['explore_joins']:
             base_view_name, source_table = get_true_source(dir_path, view_payload, explore=explore, connection_map=connection_map, view_map=view_map)
-            print(f"view name: {view_name} , base view name: {view_payload['view_name']}, source: {source_table}")
+            print(f"view name: {view_name} , base view name: {base_view_name}, source: {source_table}")
             source_payload[view_name] = dict()
-            source_payload[view_name]['view_name'] = view_payload['view_name']
+            source_payload[view_name]['view_name'] = base_view_name
             source_payload[view_name]['base_view_name'] = source_table  
 
     with open(f"{dir_path}/../maps/explore_{explore['explore_name']}-source.json", 'w') as f:

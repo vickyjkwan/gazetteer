@@ -1,1 +1,1 @@
-{"explore_name": "ucp_licenses", "explore_joins": ["sf__leads", "sf__opportunity_products", "sf__opportunities", "dtr_server_stats", "sf__cases", "ucp_usage", "ucp_licensing", "ucp_client_info", "sf__accounts", "snowflake_reghub_dockeruser"], "conn": "snowflake_production"}
+{"explore_name": "ucp_licenses", "explore_joins": ["dtr_server_stats", "sf__opportunities", "sf__opportunity_products", "sf__cases", "sf__leads", "ucp_client_info", "sf__accounts", "ucp_licensing", "ucp_usage", "snowflake_reghub_dockeruser"], "conn": "snowflake_production"}

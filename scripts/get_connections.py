@@ -9,7 +9,7 @@ def main(domain, url):
 
     dir_path = os.path.dirname(os.path.abspath(__file__))
 
-    with open(f'{dir_path}/../.secrets/secrets.json') as f:
+    with open(f'{dir_path}/../.secrets/looker_secrets.json') as f:
         j = json.load(f)
 
     data = {

@@ -1,1 +1,1 @@
-{"explore_name": "sf__users", "explore_joins": ["sf__users_opportunities", "sf__users", "sf__leads", "sf__opportunity_products", "sf__opportunities", "sf__accounts"], "conn": "data_warehouse"}
+{"explore_name": "sf__users", "explore_joins": ["sf__users_opportunities", "sf__opportunities", "sf__opportunity_products", "sf__leads", "sf__users", "sf__accounts"], "conn": "data_warehouse"}
