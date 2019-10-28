@@ -1,10 +1,8 @@
 import os
 import logging
 import time
-import explore_trees
-import file_separator
-import view_separator
-import view_trees
+from parser import split_explores, parse_explores, split_views, parse_views
+
 
 def main():
 
@@ -12,16 +10,16 @@ def main():
 
     start = time.process_time()
 
-    file_separator.split_explores(dir_path)
+    split_explores(dir_path)
     logging.info("Split up Model files to Explore paylods.")
 
-    explore_trees.parse_explores(dir_path)
+    parse_explores(dir_path)
     logging.info("Completed parsing explores and retrieving explore metadata.")
 
-    view_separator.split_views(dir_path)
+    split_views(dir_path)
     logging.info("Split up View files to base views.")
 
-    view_trees.parse_views(dir_path)
+    parse_views(dir_path)
     logging.info("Completed parsing base views and retrieving view metadata.")
 
     end = time.process_time()
