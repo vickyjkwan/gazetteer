@@ -59,11 +59,11 @@ def get_true_source(dir_path, view_payload, explore, connection_map, view_map):
 
     return view_payload['view_name'], true_source
 
-    
-def main():
-    start = time.process_time()
 
-    dir_path = os.path.dirname(os.path.realpath(__file__))
+ 
+def get_explore_source(model_name, explore_path, dir_path):
+    start = time.process_time()
+    
     logging.basicConfig()
     logging.getLogger().setLevel(logging.INFO)
     
@@ -73,14 +73,15 @@ def main():
     #                     'snowflake_production': {'database': 'PRODUCTION', 'type': 'Snowflake'},
     #                     'snowflake_medium': {'database': 'SEGMENT', 'type': 'Snowflake'}}
 
-    with open(f'{dir_path}/../maps/explore-salesforce-sf__accounts.json', 'r') as f:
+    with open(explore_path, 'r') as f:
         explore = json.load(f)
 
     view_content = dict()
     view_map = dict()
-    for view in os.listdir(f'{dir_path}/../maps'):
+    for view in next(os.walk(f'{dir_path}/../maps'))[2]:
         if view.startswith('view'):
-            view_map[view.split('-')[2].split('.')[0]] = view
+            logging.info(f'Getting source tables for view {view}...')
+            view_map[view.split('-')[1].split('.')[0]] = view
             with open(f'{dir_path}/../maps/{view}','r') as f:
                 payload = json.load(f)
                 view_content[payload['view_name']] = payload
@@ -89,13 +90,13 @@ def main():
     for view_name,view_payload in view_content.items():
         logging.info(f"Processing View source {view_payload['view_name']}...")
         if view_name in explore['explore_joins']:
-            base_view_name, source_table = get_true_source(dir_path, view_payload, explore=explore, connection_map=connection_map, view_map=view_map)
+            base_view_name, source_table = get_true_source(f'{dir_path}', view_payload, explore=explore, connection_map=connection_map, view_map=view_map)
             print(f"view name: {view_name} , base view name: {base_view_name}, source: {source_table}")
             source_payload[view_name] = dict()
             source_payload[view_name]['view_name'] = base_view_name
             source_payload[view_name]['base_view_name'] = source_table  
 
-    with open(f"{dir_path}/../maps/explore_{explore['explore_name']}-source.json", 'w') as f:
+    with open(f"{dir_path}/../maps/{model_name}/map-model-{model_name}-explore-{explore['explore_name']}-source.json", 'w') as f:
         json.dump(source_payload, f)
 
     end = time.process_time()
@@ -104,4 +105,11 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+     
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+
+    for model_folder in next(os.walk(f'{dir_path}/../maps'))[1]:
+        for explore_file in os.listdir(f'{dir_path}/../maps/{model_folder}'):
+            if explore_file.startswith('explore-'):
+                print(f'Starting to get source tables for model {model_folder} explore {explore_file}...')
+                get_explore_source(model_folder, f'{dir_path}/../maps/{model_folder}/{explore_file}', dir_path=dir_path)

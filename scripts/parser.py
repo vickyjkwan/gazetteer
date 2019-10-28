@@ -42,20 +42,27 @@ def split_up_file(dir_path, file_path, new_file_folder, file_type):
 
         if file_type == 'explore':
             file_dict['conn'] = conn.lstrip('"').rstrip('"')
+            file_dict[f'{file_type}'] = line_file[loc_file[i]:loc_file[i+1]]
+            file_dict[f'{file_type}_name'] = file_dict[f'{file_type}'][0].split(' ')[1].strip('{')
+            file_json = json.dumps(file_dict)
+
+            if new_file_folder not in os.listdir(f'{dir_path}/../{file_type}s'):
+                os.mkdir(f'{dir_path}/../{upper_folder}/{new_file_folder}')
+
+            f = open(f"{dir_path}/../{upper_folder}/{new_file_folder}/{file_dict[f'{file_type}_name']}.json","w")
+            f.write(file_json)
+            f.close()
+            
         else:
-            pass
 
-        file_dict[f'{file_type}'] = line_file[loc_file[i]:loc_file[i+1]]
-        file_dict[f'{file_type}_name'] = file_dict[f'{file_type}'][0].split(' ')[1].strip('{')
-        file_json = json.dumps(file_dict)
+            file_dict[f'{file_type}'] = line_file[loc_file[i]:loc_file[i+1]]
+            file_dict[f'{file_type}_name'] = file_dict[f'{file_type}'][0].split(' ')[1].strip('{')
+            file_json = json.dumps(file_dict)
+
+            f = open(f"{dir_path}/../{upper_folder}/{file_dict[f'{file_type}_name']}.json","w")
+            f.write(file_json)
+            f.close()
         
-        if new_file_folder not in os.listdir(f'{dir_path}/../{file_type}s'):
-            os.mkdir(f'{dir_path}/../{upper_folder}/{new_file_folder}')
-
-        f = open(f"{dir_path}/../{upper_folder}/{new_file_folder}/{file_dict[f'{file_type}_name']}.json","w")
-        f.write(file_json)
-        f.close()
-
 
 def split_explores(dir_path):
 
@@ -165,6 +172,9 @@ def parse_explores(dir_path):
     os.system(f'rm {dir_path}/.DS_Store {dir_path}/../explores/.DS_Store')
     
     for model_name in os.listdir(f'{dir_path}/../explores'):
+
+        if f'{model_name}' not in os.listdir(f'{dir_path}/../maps'):
+            os.mkdir(f"{dir_path}/../maps/{model_name}")
         
         for explore in os.listdir(f'{dir_path}/../explores/{model_name}'):
             # read json file
@@ -193,7 +203,7 @@ def parse_explores(dir_path):
 
             explore_json = json.dumps(explore_dict)
         
-            f = open(f"{dir_path}/../maps/explore-{model_name}-{explore_name}.json","w")
+            f = open(f"{dir_path}/../maps/{model_name}/explore-{explore_name}.json","w")
             f.write(explore_json)
             f.close()
 
@@ -205,13 +215,14 @@ def split_views(dir_path):
     logging.basicConfig()
     logging.getLogger().setLevel(logging.INFO)
 
-
     # breaks down view file into separate view files based on `view` structures
-
-    for view in set(os.listdir(f'{dir_path}/../views')) - set(next(os.walk(f'{dir_path}/../views'))[1]):
-        
-        view_folder = view.split('.')[0]
-        split_up_file(dir_path, f'../views/{view}', f"{view_folder}", file_type='view')
+    for view_folder in next(os.walk(f'{dir_path}/../views'))[1]:
+        os.system(f'rm {dir_path}/../views/{view_folder}/.DS_Store')
+        print(view_folder)
+        for view in os.listdir(f'{dir_path}/../views/{view_folder}'):
+            print(view)
+            os.system('rm .gitkeep')
+            split_up_file(dir_path, f'{dir_path}/../views/{view_folder}/{view}', f"", file_type='view')
 
 
 def get_derived_table(view_list):
@@ -237,7 +248,7 @@ def get_derived_table(view_list):
     return derived_list[1:-1]
         
 
-def sourcing_table(view_path):
+def source_table(view_path):
     """
     This function extracts the source view/table from the `sql_table_name` parameter, or from the `extends` parameter.
 
@@ -282,17 +293,14 @@ def parse_views(dir_path):
     # dir_path = os.path.dirname(os.path.abspath(__file__))
     os.system(f'rm {dir_path}/.DS_Store {dir_path}/../views/.DS_Store' )
 
-    for view_folder in next(os.walk(f'{dir_path}/../views'))[1]:    
-        logging.info(f'Processing view file {view_folder}') 
+    for view in next(os.walk(f'{dir_path}/../views'))[2]:    
+        logging.info(f'Starting to parse view {view}...')
  
-        for view in os.listdir(f'{dir_path}/../views/{view_folder}'):
+        view_path = f'{dir_path}/../views/{view}'
+        result = source_table(view_path)
+        result_json = json.dumps(result)
 
-            logging.info(f'Starting to parse View {view}...')
-            view_path = f'{dir_path}/../views/{view_folder}/' + view
-            result = sourcing_table(view_path)
-            result_json = json.dumps(result)
-
-            f = open(f'{dir_path}/../maps/view-{view_folder}-{view}', "w")
-            f.write(result_json)
-            f.close()
+        f = open(f'{dir_path}/../maps/view-{view}', "w")
+        f.write(result_json)
+        f.close()
             

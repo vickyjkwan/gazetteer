@@ -18,6 +18,8 @@ def gen_graph(explore, explore_name, join_list, view_source_payload, dir_path):
 
         with open(f'{dir_path}/../maps/view-{view}-{view}.json', 'r') as f:
             payload = json.load(f)
+            print(payload)
+            print(view_source_payload)
             if payload['view_type'] != 'extension':
                 base_node = payload['source_table']
             else:
@@ -55,15 +57,20 @@ def view_source_dependency(source_file, dir_path):
 
 def main(dir_path):
 
-    with open(f'{dir_path}/../maps/explore-salesforce-sf__accounts.json', 'r') as f:
-        map_accounts_explore = json.load(f)
+    for model_folder in next(os.walk(f'{dir_path}/../maps'))[1]:
+        for map_path in os.listdir(f'{dir_path}/../maps/{model_folder}'):
+            if map_path.startswith('explore-'):
+                print(f"Generating dependency graph for explore {map_path}...")
+                with open(f'{dir_path}/../maps/{model_folder}/{map_path}', 'r') as f:
+                    map_explore = json.load(f)
+                    
+                    explore = explore_view_dependency(join_list = map_explore['explore_joins'], dir_path=dir_path)
 
-    explore = explore_view_dependency(join_list = map_accounts_explore['explore_joins'], dir_path=dir_path)
-
-    view_source = view_source_dependency('explore_sf__accounts-source.json', dir_path=dir_path)
-
-    gen_graph(explore=explore, explore_name='sf__accounts', join_list=map_accounts_explore['explore_joins'], \
-                view_source_payload=view_source, dir_path=dir_path)
+                    view_source = view_source_dependency(f'{model_folder}/map-model-{model_folder}-{map_path}', dir_path=dir_path)
+                    print(view_source)
+                    
+                    gen_graph(explore=explore, explore_name=map_explore['explore_name'], join_list=map_explore['explore_joins'], \
+                                view_source_payload=view_source, dir_path=dir_path)
 
 
 if __name__ == '__main__':
