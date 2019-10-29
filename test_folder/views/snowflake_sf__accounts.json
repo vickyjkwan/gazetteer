@@ -1,0 +1,1 @@
+{"view": ["view: snowflake_sf__accounts {", "  extends: [sf__accounts]", "  sql_table_name: SEGMENT.SALESFORCE.ACCOUNTS ;;", "}", ""], "view_name": "snowflake_sf__accounts"}
