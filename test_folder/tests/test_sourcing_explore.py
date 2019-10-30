@@ -29,16 +29,12 @@ def get_view_payload():
 
 @pytest.fixture
 def get_view_map(get_view_payload):
-    view_content = get_view_payload
+
     view_map = dict()
     for view in next(os.walk('../maps'))[2]:
         if view.startswith('view'):
-
             view_map[view.split('-')[1].split('.')[0]] = view
-            with open(f'../maps/{view}','r') as f:
-                payload = json.load(f)
-                view_content[payload['view_name']] = payload
-
+           
     return view_map
 
 
@@ -61,4 +57,28 @@ def test_get_true_source(get_looker_conn, get_view_payload, get_view_map):
 
     source_payload = sourcing_explore.get_true_source(dir_path, view_payload, explore, connection_map, view_map)
 
-    assert source_payload == ('sfbase__accounts', 'Amazon.salesforce.accounts')
+    assert source_payload == ('sfbase__accounts', 'Redshift.salesforce.accounts')
+
+
+def test_look_up_target_view(get_view_payload, get_view_map):
+    
+    for k, v in get_view_payload.items():
+        view_payload = v
+
+    target_view_payload = sourcing_explore.look_up_target_view(source_view_name=view_payload['source_table'], view_map=get_view_map)
+
+    assert target_view_payload == 'view-sfbase__accounts.json'
+    
+
+def test_is_true_source():
+    view_content = dict()
+    with open('../maps/view-snowflake_sf__accounts.json','r') as f:
+        payload = json.load(f)
+        view_content[payload['view_name']] = payload
+    
+    view_payload = view_content['snowflake_sf__accounts']
+    source = view_payload['source_table']
+    
+    assert sourcing_explore.is_true_source(source) == True
+
+

@@ -42,13 +42,18 @@ def look_up_target_view(source_view_name, view_map):
 
 
 def is_true_source(source):
-    return bool(len(source.split('.')) == 4)
+    return bool(len(source.split('.')) == 3)
 
 
 def get_conn_db(explore, connection_map):
     conn = explore['conn']
     database = connection_map[conn]['database']
-    provider = connection_map[conn]['type'].split(' ')[0]
+    provider = connection_map[conn]['type'].split(' ')
+    if len(provider) > 1:
+        provider = provider[1]
+    else:
+        provider = provider[0]
+        
     return provider, database
 
 ####### need to add NDT, and derived table ################
