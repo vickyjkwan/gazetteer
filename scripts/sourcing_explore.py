@@ -102,10 +102,6 @@ def get_explore_source(model_name, explore_path, dir_path):
     logging.getLogger().setLevel(logging.INFO)
     
     connection_map = get_connections(domain='https://docker.looker.com:19999', url='/api/3.1/connections')
-    # connection_map = {  'hub': {'database': 'accounts', 'type': 'PostgreSQL'},
-    #                     'data_warehouse': {'database': 'salesforce', 'type': 'Redshift'},
-    #                     'snowflake_production': {'database': 'PRODUCTION', 'type': 'Snowflake'},
-    #                     'snowflake_medium': {'database': 'SEGMENT', 'type': 'Snowflake'}}
 
     with open(explore_path, 'r') as f:
         explore = json.load(f)

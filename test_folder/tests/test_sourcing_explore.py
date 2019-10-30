@@ -62,7 +62,7 @@ def test_get_true_source(get_looker_conn, get_view_payload, get_view_map):
 
 def test_look_up_target_view(get_view_payload, get_view_map):
     
-    for k, v in get_view_payload.items():
+    for _, v in get_view_payload.items():
         view_payload = v
 
     target_view_payload = sourcing_explore.look_up_target_view(source_view_name=view_payload['source_table'], view_map=get_view_map)
@@ -82,3 +82,38 @@ def test_is_true_source():
     assert sourcing_explore.is_true_source(source) == True
 
 
+def test_get_conn_db(get_looker_conn):
+    explore = {'conn': 'data_warehouse', \
+            'explore': ['explore: sf__accounts {', \
+            '  persist_for: "24 hours"', \
+            '  label: "Accounts"', \
+            '  view_label: "Accounts"', \
+            '  sql_always_where: NOT ${sf__accounts.is_deleted} ;;', \
+            '', \
+            '#'], \
+            'explore_name': 'sf__accounts'}
+    
+    connection_map = get_looker_conn
+
+    assert sourcing_explore.get_conn_db(explore=explore, connection_map=connection_map) == ('Redshift', 'production')
+
+
+def test_get_explore_source():
+    model_name = 'sample_model'
+    explore_path = '../maps/sample_model/explore-sf__accounts.json'
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+
+    sourcing_explore.get_explore_source(model_name, explore_path, dir_path)
+    
+    with open(f"{dir_path}/../maps/{model_name}/map-model-{model_name}-explore-sf__accounts-source.json", 'r') as f:
+        source_payload = json.load(f)
+
+    assert source_payload == {'sf__cases': {'view_name': 'sfbase__cases',
+                                'base_view_name': 'Redshift.salesforce.cases'},
+                                'sf__accounts': {'view_name': 'sfbase__accounts',
+                                'base_view_name': 'Redshift.salesforce.accounts'},
+                                'sf__contacts': {'view_name': 'sfbase__contacts',
+                                'base_view_name': 'Redshift.salesforce.contacts'},
+                                'sf__users': {'view_name': 'sfbase__users',
+                                'base_view_name': 'Redshift.salesforce.users'}}
+    

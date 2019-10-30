@@ -1,10 +1,35 @@
 from graphviz import Digraph
 import json
 import os
-import get_connections
 import logging
 
-def gen_graph(explore, explore_name, join_list, view_source_payload, dir_path):
+
+def explore_view_dependency(join_list, dir_path):
+    
+    explore = dict()
+    for join in join_list:
+        explore_view_list = []
+        for file in os.listdir(f'{dir_path}/../maps'):
+                if file.startswith('view') and file.split('-')[1].split('.')[0] == join:
+                    with open(f'{dir_path}/../maps/{file}') as f:
+                        view_dict = json.load(f)
+
+                    explore_view_list.append(view_dict['source_table'])
+
+        explore[join] = explore_view_list
+
+    return explore
+
+
+def view_source_dependency(source_file, dir_path):
+
+    with open(f'{dir_path}/../maps/{source_file}', 'r') as f:
+        view_source = json.load(f)
+    
+    return view_source
+
+
+def gen_graph(explore_name, join_list, view_source_payload, dir_path):
     dot = Digraph(f'{explore_name}')
     dot.node(explore_name, explore_name)
 
@@ -16,7 +41,7 @@ def gen_graph(explore, explore_name, join_list, view_source_payload, dir_path):
         dot.node(join_node, join_node)
         dot.edge(explore_name, join_node)
 
-        with open(f'{dir_path}/../maps/view-{view}-{view}.json', 'r') as f:
+        with open(f'{dir_path}/../maps/view-{view}.json', 'r') as f:
             payload = json.load(f)
             print(payload)
             print(view_source_payload)
@@ -28,48 +53,26 @@ def gen_graph(explore, explore_name, join_list, view_source_payload, dir_path):
             dot.node(base_node, base_node)
             dot.edge(join_node, base_node)
             
-    dot.render(f'{dir_path}/../graphs/{explore_name}.gv', view=True)
+    dot.render(f'{dir_path}/../graphs/{explore_name}.gv', view=False)
     return logging.info(f'Successfully generated dependency graph for Explore {explore_name}.')
 
-
-def explore_view_dependency(join_list, dir_path):
-    
-    explore = dict()
-    for join in join_list:
-        explore_view_list = []
-        for file in os.listdir(f'{dir_path}/../maps'):
-                if file.startswith('view') and file.split('-')[1] == join:
-                    with open(f'{dir_path}/../maps/{file}') as f:
-                        view_dict = json.load(f)
-
-                    explore_view_list.append(view_dict['view_name'])
-
-        explore[join] = explore_view_list
-
-    return explore
-
-
-def view_source_dependency(source_file, dir_path):
-    with open(f'{dir_path}/../maps/{source_file}', 'r') as f:
-        view_source = json.load(f)
-    
-    return view_source
 
 def main(dir_path):
 
     for model_folder in next(os.walk(f'{dir_path}/../maps'))[1]:
         for map_path in os.listdir(f'{dir_path}/../maps/{model_folder}'):
             if map_path.startswith('explore-'):
-                print(f"Generating dependency graph for explore {map_path}...")
+                map_path = map_path.split('.')[0]
+
+                logging.info(f"Generating dependency graph for explore {map_path}...")
                 with open(f'{dir_path}/../maps/{model_folder}/{map_path}', 'r') as f:
                     map_explore = json.load(f)
                     
-                    explore = explore_view_dependency(join_list = map_explore['explore_joins'], dir_path=dir_path)
+                    # explore = explore_view_dependency(join_list = map_explore['explore_joins'], dir_path=dir_path)
 
-                    view_source = view_source_dependency(f'{model_folder}/map-model-{model_folder}-{map_path}', dir_path=dir_path)
-                    print(view_source)
+                    view_source = view_source_dependency(f'{model_folder}/map-model-{model_folder}-{map_path}-source.json', dir_path=dir_path)
                     
-                    gen_graph(explore=explore, explore_name=map_explore['explore_name'], join_list=map_explore['explore_joins'], \
+                    gen_graph(explore_name=map_explore['explore_name'], join_list=map_explore['explore_joins'], \
                                 view_source_payload=view_source, dir_path=dir_path)
 
 
