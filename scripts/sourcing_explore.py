@@ -1,9 +1,39 @@
 import json
 import os
 import re
-import get_connections
 import logging
 import time
+import requests
+
+
+def get_connections(domain, url):
+
+    conn_dict = dict()
+
+    dir_path = os.path.dirname(os.path.abspath(__file__))
+
+    with open(f'{dir_path}/../.secrets/looker_secrets.json') as f:
+        j = json.load(f)
+
+    data = {
+        'client_id': j['client_id'],
+        'client_secret': j['client_secret']
+    }
+
+    response = requests.post(f'{domain}/login', data=data)
+
+    access_token = response.json()['access_token']
+
+    headers = {
+        'Authorization': f'token {access_token}'
+    }
+
+    response = requests.get(domain+url, headers=headers)
+
+    for r in response.json():
+        conn_dict[r['name']] = {'database': r['database'], 'type': r['dialect']['label']}
+
+    return conn_dict
 
 
 def look_up_target_view(source_view_name, view_map):
@@ -60,14 +90,13 @@ def get_true_source(dir_path, view_payload, explore, connection_map, view_map):
     return view_payload['view_name'], true_source
 
 
- 
 def get_explore_source(model_name, explore_path, dir_path):
     start = time.process_time()
     
     logging.basicConfig()
     logging.getLogger().setLevel(logging.INFO)
     
-    connection_map = get_connections.main(domain='https://docker.looker.com:19999', url='/api/3.1/connections')
+    connection_map = get_connections(domain='https://docker.looker.com:19999', url='/api/3.1/connections')
     # connection_map = {  'hub': {'database': 'accounts', 'type': 'PostgreSQL'},
     #                     'data_warehouse': {'database': 'salesforce', 'type': 'Redshift'},
     #                     'snowflake_production': {'database': 'PRODUCTION', 'type': 'Snowflake'},
