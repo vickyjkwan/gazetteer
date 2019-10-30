@@ -3,22 +3,16 @@ import re
 import json
 import os
 import logging
-from scripts import graphing_explore
+from scripts import graphing_explore, sourcing_explore
 
-# errrrrrgh this function isn't being called anywhere
-# def test_explore_view_dependency():
 
-#     with open(f'../maps/sample_model/explore-sf__accounts.json', 'r') as f:
-#         map_explore = json.load(f)
-    
-#     dir_path = os.path.dirname(os.path.realpath(__file__))
-#     join_list = map_explore['explore_joins']
-#     source = graphing_explore.explore_view_dependency(join_list, dir_path)
-    
-#     assert source == {'sf__contacts': ['sfbase__contacts'], \
-#                         'sf__cases': ['sfbase__cases'], \
-#                         'sf__users': ['sfbase__users'], \
-#                         'sf__accounts': ['sfbase__accounts']}
+@pytest.fixture
+def generate_explore():
+    model_name = 'sample_model'
+    explore_path = '../maps/sample_model/explore-sf__accounts_leads_engagio.json'
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+
+    sourcing_explore.get_explore_source(model_name, explore_path, dir_path)
 
 
 def test_view_source_dependency():
@@ -27,7 +21,14 @@ def test_view_source_dependency():
     dir_path = os.path.dirname(os.path.realpath(__file__))
     source = graphing_explore.view_source_dependency(source_file, dir_path)
 
-    assert source == {'sf__accounts': {'view_name': 'sfbase__accounts', 'base_view_name': 'Redshift.salesforce.accounts'}}
+    assert source == {'sf__cases': {'view_name': 'sfbase__cases', \
+                        'base_view_name': 'Redshift.salesforce.cases'}, \
+                        'sf__accounts': {'view_name': 'sfbase__accounts', \
+                        'base_view_name': 'Redshift.salesforce.accounts'}, \
+                        'sf__contacts': {'view_name': 'sfbase__contacts', \
+                        'base_view_name': 'Redshift.salesforce.contacts'}, \
+                        'sf__users': {'view_name': 'sfbase__users', \
+                        'base_view_name': 'Redshift.salesforce.users'}}
 
 
 def test_gen_graph():
@@ -47,3 +48,15 @@ def test_gen_graph():
     graphing_explore.gen_graph(explore_name, join_list, view_source, dir_path)
 
     assert f'{explore_name}.gv' in os.listdir(f'{dir_path}/../graphs')
+
+
+def test_main(generate_explore):
+    
+    # generate the sf__accounts_leads_engagio explore
+    generate_explore
+
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    graphing_explore.main(dir_path)
+
+    assert 'sf__accounts_leads_engagio.gv' in os.listdir(f'{dir_path}/../graphs')
+    assert 'sf__accounts.gv' in os.listdir(f'{dir_path}/../graphs')

@@ -4,23 +4,6 @@ import os
 import logging
 
 
-def explore_view_dependency(join_list, dir_path):
-    
-    explore = dict()
-    for join in join_list:
-        explore_view_list = []
-        for file in os.listdir(f'{dir_path}/../maps'):
-                if file.startswith('view') and file.split('-')[1].split('.')[0] == join:
-                    with open(f'{dir_path}/../maps/{file}') as f:
-                        view_dict = json.load(f)
-
-                    explore_view_list.append(view_dict['source_table'])
-
-        explore[join] = explore_view_list
-
-    return explore
-
-
 def view_source_dependency(source_file, dir_path):
 
     with open(f'{dir_path}/../maps/{source_file}', 'r') as f:
@@ -65,10 +48,8 @@ def main(dir_path):
                 map_path = map_path.split('.')[0]
 
                 logging.info(f"Generating dependency graph for explore {map_path}...")
-                with open(f'{dir_path}/../maps/{model_folder}/{map_path}', 'r') as f:
+                with open(f'{dir_path}/../maps/{model_folder}/{map_path}.json', 'r') as f:
                     map_explore = json.load(f)
-                    
-                    # explore = explore_view_dependency(join_list = map_explore['explore_joins'], dir_path=dir_path)
 
                     view_source = view_source_dependency(f'{model_folder}/map-model-{model_folder}-{map_path}-source.json', dir_path=dir_path)
                     
