@@ -219,8 +219,7 @@ def split_views(dir_path):
     for view_folder in next(os.walk(f'{dir_path}/../views'))[1]:
         os.system(f'rm {dir_path}/../views/{view_folder}/.DS_Store')
         print(view_folder)
-        for view in os.listdir(f'{dir_path}/../views/{view_folder}'):
-            print(view)
+        for view in next(os.walk(f'{dir_path}/../views/{view_folder}'))[2]:
             os.system('rm .gitkeep')
             split_up_file(dir_path, f'{dir_path}/../views/{view_folder}/{view}', f"", file_type='view')
 

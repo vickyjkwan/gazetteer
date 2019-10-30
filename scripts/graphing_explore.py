@@ -24,18 +24,22 @@ def gen_graph(explore_name, join_list, view_source_payload, dir_path):
         dot.node(join_node, join_node)
         dot.edge(explore_name, join_node)
 
-        with open(f'{dir_path}/../maps/view-{view}.json', 'r') as f:
-            payload = json.load(f)
-            print(payload)
-            print(view_source_payload)
-            if payload['view_type'] != 'extension':
-                base_node = payload['source_table']
-            else:
-                base_node = view_source_payload[payload['view_name']]['base_view_name']
-            
-            dot.node(base_node, base_node)
-            dot.edge(join_node, base_node)
-            
+        try:
+            with open(f'{dir_path}/../maps/view-{view}.json', 'r') as f:
+                payload = json.load(f)
+
+                if payload['view_type'] == 'derived_table':
+                    base_node = "Need further investigation"
+                elif payload['view_type'] == 'extension':
+                    base_node = view_source_payload[payload['view_name']]['base_view_name']
+                else:
+                    base_node = payload['source_table']
+                
+                dot.node(base_node, base_node)
+                dot.edge(join_node, base_node)
+        except:
+            pass
+
     dot.render(f'{dir_path}/../graphs/{explore_name}.gv', view=False)
     return logging.info(f'Successfully generated dependency graph for Explore {explore_name}.')
 

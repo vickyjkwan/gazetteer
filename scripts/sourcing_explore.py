@@ -138,8 +138,9 @@ if __name__ == "__main__":
      
     dir_path = os.path.dirname(os.path.realpath(__file__))
 
-    for model_folder in next(os.walk(f'{dir_path}/../maps'))[1]:
-        for explore_file in os.listdir(f'{dir_path}/../maps/{model_folder}'):
-            if explore_file.startswith('explore-'):
-                print(f'Starting to get source tables for model {model_folder} explore {explore_file}...')
-                get_explore_source(model_folder, f'{dir_path}/../maps/{model_folder}/{explore_file}', dir_path=dir_path)
+    # for model_folder in next(os.walk(f'{dir_path}/../maps'))[1]:
+    model_folder = 'snowflake_salesforce'
+    for explore_file in os.listdir(f'{dir_path}/../maps/{model_folder}'):
+        if explore_file.startswith('explore-'):
+            print(f'Starting to get source tables for model {model_folder} explore {explore_file}...')
+            get_explore_source(model_folder, f'{dir_path}/../maps/{model_folder}/{explore_file}', dir_path=dir_path)
