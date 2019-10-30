@@ -21,7 +21,8 @@ This is a repo for building a dynamic dependency diagram for all Looker and Snow
 ![alt text](dependency.png "Generating Process")
 
 # Sample dependency chart:
-![alt text](sf__leads_and_contacts.pdf "Snowflake Salesforce Explore sf__leads_and_contacts")
+![alt text](sample.png "Snowflake Salesforce Explore sf__leads_and_contacts")
+![alt text](sf__leads_and_contacts.pdf "Link")
 
 # Ideal goals:
 
