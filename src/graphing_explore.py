@@ -12,7 +12,7 @@ def view_source_dependency(source_file, dir_path):
     return view_source
 
 
-def gen_graph(explore_name, join_list, view_source_payload, dir_path):
+def gen_graph(explore_name, join_list, connection, view_source_payload, dir_path):
     dot = Digraph(f'{explore_name}')
     dot.node(explore_name, explore_name)
 
@@ -22,7 +22,7 @@ def gen_graph(explore_name, join_list, view_source_payload, dir_path):
     
         join_node = f'view_{view}'
         dot.node(join_node, join_node)
-        dot.edge(explore_name, join_node)
+        dot.edge(explore_name, join_node, label=connection)
 
         try:
             with open(f'{dir_path}/../maps/view-{view}.json', 'r') as f:
@@ -55,11 +55,14 @@ def main(dir_path):
                 with open(f'{dir_path}/../maps/{model_folder}/{map_path}.json', 'r') as f:
                     map_explore = json.load(f)
 
-                    view_source = view_source_dependency(f'{model_folder}/map-model-{model_folder}-{map_path}-source.json', dir_path=dir_path)
-                    
-                    gen_graph(explore_name=map_explore['explore_name'], join_list=map_explore['explore_joins'], \
-                                view_source_payload=view_source, dir_path=dir_path)
+                    try:
+                        view_source = view_source_dependency(f'{model_folder}/map-model-{model_folder}-{map_path}-source.json', dir_path=dir_path)
+                        
+                        gen_graph(explore_name=map_explore['explore_name'], join_list=map_explore['explore_joins'], \
+                                    connection="", view_source_payload=view_source, dir_path=dir_path)
 
+                    except:
+                        pass
 
 if __name__ == '__main__':
     dir_path = os.path.dirname(os.path.realpath(__file__))
