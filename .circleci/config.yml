@@ -5,5 +5,5 @@ jobs:
   build:
     steps:
       - codecov/upload:
-          file: {{ test_folder/tests/coverage.xml }}
+          file: {{ test_folder/tests/ }}
 
