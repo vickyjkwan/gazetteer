@@ -1,6 +1,6 @@
 [![codecov](https://codecov.io/gh/mathilda0902/gazetteer/branch/master/graph/badge.svg)](https://codecov.io/gh/mathilda0902/gazetteer)
 
-This is a repo for building a dynamic dependency diagram for all Looker and Snowflake data sources.
+This is repo contains scripts to manipulate LookML files, and to generate dependency graphs for each explore.
 
 # Current worlflow:
 
