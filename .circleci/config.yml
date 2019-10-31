@@ -1,0 +1,9 @@
+version: 2.1
+orbs:
+  codecov: codecov/codecov@1.0.2
+jobs:
+  build:
+    steps:
+      - codecov/upload:
+          file: {{ test_folder/tests/coverage.xml }}
+

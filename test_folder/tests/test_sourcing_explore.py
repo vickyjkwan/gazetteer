@@ -46,7 +46,7 @@ def test_get_connections():
 
 def test_get_true_source(get_looker_conn, get_view_payload, get_view_map):
 
-    dir_path = '..'
+    dir_path = '.' 
     view_content = get_view_payload
     view_payload = view_content['sf__accounts']
     explore = {"conn": "data_warehouse", \
