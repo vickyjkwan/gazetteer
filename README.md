@@ -1,4 +1,5 @@
 This is a repo for building a dynamic dependency diagram for all Looker and Snowflake data sources.
+[![codecov](https://codecov.io/gh/mathilda0902/gazetteer/branch/master/graph/badge.svg)](https://codecov.io/gh/mathilda0902/gazetteer)
 
 # Current worlflow:
 
