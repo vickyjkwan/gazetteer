@@ -3,7 +3,7 @@ import re
 import json
 import os
 import logging
-from scripts import graphing_explore, sourcing_explore
+from src import graphing_explore, sourcing_explore
 
 
 @pytest.fixture

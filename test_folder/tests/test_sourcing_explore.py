@@ -3,7 +3,7 @@ import re
 import json
 import os
 import logging
-from scripts import sourcing_explore
+from src import sourcing_explore
 
 
 @pytest.fixture

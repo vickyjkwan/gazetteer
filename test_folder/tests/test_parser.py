@@ -3,7 +3,7 @@ import json
 import os
 import logging
 import pytest
-from scripts import parser
+from src import parser
 
 
 @pytest.fixture
