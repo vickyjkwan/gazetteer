@@ -76,14 +76,14 @@ def get_true_source(dir_path, view_payload, explore, connection_map, view_map):
                 true_source = view_payload['source_table']
 
             else: 
-                if len(source.split('.')) == 3:
+                if len(source.split('.')) == 4:
                     true_source = source
                 
                 else:
                     provider, database = get_conn_db(explore=explore, connection_map=connection_map)
-                    if len(source.split('.')) == 2:
-                        true_source = f'{provider}.{source}'
-                    elif len(source.split('.')) == 1:
+                    if len(source.split('.')) == 3:
+                        true_source = f'{provider}.{database}.{source}'
+                    elif len(source.split('.')) == 2:
                         true_source = f'{provider}.{database}.{source}'
 
         elif view_payload['view_type'] == 'derived_table':
