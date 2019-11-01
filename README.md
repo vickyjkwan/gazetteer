@@ -24,7 +24,7 @@ This is repo contains scripts to manipulate LookML files, and to generate depend
 
 
 # Diagram as of 2019-10-15:
-![alt text](dependency.png "Generating Process")
+![alt text](work_flow_diagram.png "Generating Process")
 
 # Sample dependency chart:
 ![alt text](sample.png "Snowflake Salesforce Explore sf__tasks")
