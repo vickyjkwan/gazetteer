@@ -8,8 +8,8 @@ from src import sourcing_explore
 
 @pytest.fixture
 def get_looker_conn():
-    connection_map = sourcing_explore.get_connections(domain='https://docker.looker.com:19999', url='/api/3.1/connections')
-    return connection_map
+    looker_connections = sourcing_explore.get_connections(domain='https://docker.looker.com:19999', url='/api/3.1/connections')
+    return looker_connections
 
 
 @pytest.fixture
@@ -36,6 +36,22 @@ def get_view_map(get_view_payload):
             view_map[view.split('-')[1].split('.')[0]] = view
            
     return view_map
+
+
+@pytest.fixture
+def get_view_content(get_view_map):
+
+    view_content = dict()
+    view_map = get_view_map
+    for view in next(os.walk(f'../maps'))[2]:
+        if view.startswith('view'):
+            logging.info(f'Getting source tables for view {view}...')
+            view_map[view.split('-')[1].split('.')[0]] = view
+            with open(f'../maps/{view}','r') as f:
+                payload = json.load(f)
+                view_content[payload['view_name']] = payload
+    
+    return view_content
 
 
 def test_get_connections():
@@ -98,12 +114,33 @@ def test_get_conn_db(get_looker_conn):
     assert sourcing_explore.get_conn_db(explore=explore, connection_map=connection_map) == ('Redshift', 'production')
 
 
-def test_get_explore_source():
+def test_get_view_source():
+
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+
+    view_map, _ = sourcing_explore.get_view_source(dir_path) 
+
+    assert view_map == {'sf__leads': 'view-sf__leads.json', \
+                        'sf__cases': 'view-sf__cases.json', \
+                        'sfbase__users': 'view-sfbase__users.json', \
+                        'total_active_node_count': 'view-total_active_node_count.json', \
+                        'sf__accounts': 'view-sf__accounts.json', \
+                        'snowflake_sf__accounts': 'view-snowflake_sf__accounts.json', \
+                        'sfbase__cases': 'view-sfbase__cases.json', \
+                        'sf__contacts': 'view-sf__contacts.json', \
+                        'sfbase__leads': 'view-sfbase__leads.json', \
+                        'sfbase__contacts': 'view-sfbase__contacts.json', \
+                        'sfbase__accounts': 'view-sfbase__accounts.json', \
+                        'sf__users': 'view-sf__users.json'}
+
+
+def test_get_explore_source(get_looker_conn, get_view_content, get_view_map):
     model_name = 'sample_model'
     explore_path = '../maps/sample_model/explore-sf__accounts.json'
     dir_path = os.path.dirname(os.path.realpath(__file__))
+    connection_map=get_looker_conn
 
-    sourcing_explore.get_explore_source(model_name, explore_path, dir_path)
+    sourcing_explore.get_explore_source(model_name, explore_path, dir_path, view_content=get_view_content, view_map=get_view_map, connection_map=connection_map)
     
     with open(f"{dir_path}/../maps/{model_name}/map-model-{model_name}-explore-sf__accounts-source.json", 'r') as f:
         source_payload = json.load(f)
@@ -116,4 +153,3 @@ def test_get_explore_source():
                                 'base_view_name': 'Redshift.salesforce.contacts'},
                                 'sf__users': {'view_name': 'sfbase__users',
                                 'base_view_name': 'Redshift.salesforce.users'}}
-    
