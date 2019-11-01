@@ -6,10 +6,10 @@ import time
 import requests
 
 
-def get_connections(domain, url):
+def get_connections(domain, url, dir_path=None):
 
     conn_dict = dict()
-
+    
     dir_path = os.path.dirname(os.path.abspath(__file__))
 
     with open(f'{dir_path}/../.secrets/looker_secrets.json') as f:
@@ -76,14 +76,14 @@ def get_true_source(dir_path, view_payload, explore, connection_map, view_map):
                 true_source = view_payload['source_table']
 
             else: 
-                if len(source.split('.')) == 3:
+                if len(source.split('.')) == 4:
                     true_source = source
                 
                 else:
                     provider, database = get_conn_db(explore=explore, connection_map=connection_map)
-                    if len(source.split('.')) == 2:
-                        true_source = f'{provider}.{source}'
-                    elif len(source.split('.')) == 1:
+                    if len(source.split('.')) == 3:
+                        true_source = f'{provider}.{database}.{source}'
+                    elif len(source.split('.')) == 2:
                         true_source = f'{provider}.{database}.{source}'
 
         elif view_payload['view_type'] == 'derived_table':
@@ -95,16 +95,7 @@ def get_true_source(dir_path, view_payload, explore, connection_map, view_map):
     return view_payload['view_name'], true_source
 
 
-def get_explore_source(model_name, explore_path, dir_path):
-    start = time.process_time()
-    
-    logging.basicConfig()
-    logging.getLogger().setLevel(logging.INFO)
-    
-    connection_map = get_connections(domain='https://docker.looker.com:19999', url='/api/3.1/connections')
-
-    with open(explore_path, 'r') as f:
-        explore = json.load(f)
+def get_view_source(dir_path):
 
     view_content = dict()
     view_map = dict()
@@ -116,12 +107,23 @@ def get_explore_source(model_name, explore_path, dir_path):
                 payload = json.load(f)
                 view_content[payload['view_name']] = payload
 
+    return view_map, view_content
+
+def get_explore_source(model_name, explore_path, dir_path, view_content, view_map, connection_map):
+    start = time.process_time()
+    
+    logging.basicConfig()
+    logging.getLogger().setLevel(logging.INFO)
+
+    with open(explore_path, 'r') as f:
+        explore = json.load(f)
+
     source_payload = dict()
     for view_name,view_payload in view_content.items():
         logging.info(f"Processing View source {view_payload['view_name']}...")
         if view_name in explore['explore_joins']:
             base_view_name, source_table = get_true_source(f'{dir_path}', view_payload, explore=explore, connection_map=connection_map, view_map=view_map)
-            print(f"view name: {view_name} , base view name: {base_view_name}, source: {source_table}")
+            logging.info(f"view name: {view_name} , base view name: {base_view_name}, source: {source_table}")
             source_payload[view_name] = dict()
             source_payload[view_name]['view_name'] = base_view_name
             source_payload[view_name]['base_view_name'] = source_table  
@@ -137,10 +139,13 @@ def get_explore_source(model_name, explore_path, dir_path):
 if __name__ == "__main__":
      
     dir_path = os.path.dirname(os.path.realpath(__file__))
+    connection_map = get_connections(domain='https://docker.looker.com:19999', url='/api/3.1/connections')
+    view_map, view_content = get_view_source(dir_path)
 
     # for model_folder in next(os.walk(f'{dir_path}/../maps'))[1]:
     model_folder = 'snowflake_salesforce'
+
     for explore_file in os.listdir(f'{dir_path}/../maps/{model_folder}'):
         if explore_file.startswith('explore-'):
             print(f'Starting to get source tables for model {model_folder} explore {explore_file}...')
-            get_explore_source(model_folder, f'{dir_path}/../maps/{model_folder}/{explore_file}', dir_path=dir_path)
+            get_explore_source(model_folder, f'{dir_path}/../maps/{model_folder}/{explore_file}', dir_path=dir_path, view_map=view_map, view_content=view_content, connection_map=connection_map)
