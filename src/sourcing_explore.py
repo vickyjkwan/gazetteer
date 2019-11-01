@@ -114,8 +114,6 @@ def get_explore_source(model_name, explore_path, dir_path, view_content, view_ma
     
     logging.basicConfig()
     logging.getLogger().setLevel(logging.INFO)
-    
-    # connection_map = get_connections(domain='https://docker.looker.com:19999', url='/api/3.1/connections')
 
     with open(explore_path, 'r') as f:
         explore = json.load(f)
