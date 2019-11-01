@@ -1,29 +1,33 @@
 [![codecov](https://codecov.io/gh/mathilda0902/gazetteer/branch/master/graph/badge.svg)](https://codecov.io/gh/mathilda0902/gazetteer)
-This is a repo for building a dynamic dependency diagram for all Looker and Snowflake data sources.
+
+This is repo contains scripts to manipulate LookML files, and to generate dependency graphs for each explore.
 
 # Current worlflow:
 
-1. Script `get_connections.py` contains one function `main(domain, url)` that is ready to be called by passing the recent Looker API endpoint. Secrets are stored in the `.secrets` folder and ignored in repo. The function returns a list of the current LookML connection names, with respective Warehouse names and Database names. 
+1. Script `parser.py` contains many file actions, including splitting up views into view files containing single views, splitting up explore files into single explores, getting joined views from explore statements.
 
-2. Script `file_separator.py` splits up either views within each explore, or explores within each model, and populates the json files in folder the corresponding `views` folder and `explores` folder.
+2. Script `parsing_model.py` contains these steps:
 
-3. Script `explore_trees.py` reads and parses these json files in the `explores` folder, and return a set of json files that represent the mapping relationships for each explore and its child joins. These mapping files are stored as json files in the `maps` folder. File names in `mapes` folder follow this convention: `explore-[modelName]-[exploreName]`.
+    *1)* Split up Model files to Explore paylods
+    
+    *2)* Parse Explores and retrieve Explore metadata.
 
-4. Script `view_separator.py` splits view files containing multiple view structures into separate view files. Saves single view files under corresponding view folder, `views/view_name`. 
+    *3)* Split up View files to base Views.
+    
+    *4)* Parse base Views and retrieve View metadata.
 
-5. Script `view_trees.py` reads the split view files (from step 4), parses the source claused and stores source information based on different types: the direct sourcing from `sql_table_name`, the extension from another view with an overridden `sql_table_name`, the extension from another view without an overridden `sql_table_name`, and extension based on `derived_table` (can be from sql, or explore). The mapping structures in json format are thus saved in `maps` folder, together with other mapping objects. File names in `maps` folder follow this convention: `view-[viewFileName]-[viewName]`.
+3. Script `sourcing_explore.py` generates "maps" for each view that is referenced within each explore (with specific connection that contains details about the data warehouse and schemas). 
 
-6. Script `some_script_i_have_not_yet_named.py` calls `get_connections.py` to get an up-to-date connection map. Generates a view mapping based on various types of `view.lkml` parameter, and matches the cloud provider and database names. Currently supporting: `sql_table_name` (relative, and absolute) and `extends`. To be featured: `derived_table` and NDT's.
+4. Script `graphing_explore.py` generates graphs for each explore, with nodes representing view names and base table names.
 
-7. Script `graph_mapping.py` reads explore structure payloads from `maps` folder. For each explore, this script will evaluate the necessary joins, match the join names with view file names, and look for the actual view name that is being called and its underlying tables. Generates graph representations for each explore. These `.gv` files and corresponding `.pdf` files are saved in the folder `graphs`.
+* Tests are stored in `test_folder`, with sample models, explores and view files for testing `src` scripts.
 
 
 # Diagram as of 2019-10-15:
 ![alt text](dependency.png "Generating Process")
 
 # Sample dependency chart:
-![alt text](sample.png "Snowflake Salesforce Explore sf__leads_and_contacts")
-![alt text](sf__leads_and_contacts.pdf "Link")
+![alt text](sample.png "Snowflake Salesforce Explore sf__tasks")
 
 # Ideal goals:
 

@@ -37,6 +37,7 @@ def test_gen_graph():
     with open(f'{dir_path}/../maps/sample_model/explore-sf__accounts.json', 'r') as f:
         map_explore = json.load(f)
     explore_name=map_explore['explore_name']
+    connection=map_explore['conn']
     join_list=map_explore['explore_joins']
 
     model_folder = 'sample_model'
@@ -45,7 +46,7 @@ def test_gen_graph():
     with open(f'{dir_path}/../maps/{model_folder}/map-model-{model_folder}-{map_path}-source.json', 'r') as f:
         view_source = json.load(f)
 
-    graphing_explore.gen_graph(explore_name, join_list, view_source, dir_path)
+    graphing_explore.gen_graph(explore_name, join_list, connection, view_source, dir_path)
 
     assert f'{explore_name}.gv' in os.listdir(f'{dir_path}/../graphs')
 
