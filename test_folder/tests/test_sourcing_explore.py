@@ -6,54 +6,6 @@ import logging
 from src import sourcing_explore
 
 
-@pytest.fixture
-def get_looker_conn():
-    looker_connections = sourcing_explore.get_connections(domain='https://docker.looker.com:19999', url='/api/3.1/connections')
-    return looker_connections
-
-
-@pytest.fixture
-def get_view_payload():
-
-    view_content = dict()
-    view_map = dict()
-    view = '../maps/view-sf__accounts.json'
-    view_map[view.split('-')[1].split('.')[0]] = view
-
-    with open(view,'r') as f:
-        payload = json.load(f)
-        view_content[payload['view_name']] = payload
-    
-    return view_content
-
-
-@pytest.fixture
-def get_view_map(get_view_payload):
-
-    view_map = dict()
-    for view in next(os.walk('../maps'))[2]:
-        if view.startswith('view'):
-            view_map[view.split('-')[1].split('.')[0]] = view
-           
-    return view_map
-
-
-@pytest.fixture
-def get_view_content(get_view_map):
-
-    view_content = dict()
-    view_map = get_view_map
-    for view in next(os.walk(f'../maps'))[2]:
-        if view.startswith('view'):
-            logging.info(f'Getting source tables for view {view}...')
-            view_map[view.split('-')[1].split('.')[0]] = view
-            with open(f'../maps/{view}','r') as f:
-                payload = json.load(f)
-                view_content[payload['view_name']] = payload
-    
-    return view_content
-
-
 def test_get_connections():
     looker_connections = sourcing_explore.get_connections(domain='https://docker.looker.com:19999', url='/api/3.1/connections')
 
@@ -73,7 +25,7 @@ def test_get_true_source(get_looker_conn, get_view_payload, get_view_map):
 
     source_payload = sourcing_explore.get_true_source(dir_path, view_payload, explore, connection_map, view_map)
 
-    assert source_payload == ('sfbase__accounts', 'Redshift.salesforce.accounts')
+    assert source_payload == ('sfbase__accounts', 'Redshift.production.salesforce.accounts')
 
 
 def test_look_up_target_view(get_view_payload, get_view_map):
@@ -146,10 +98,10 @@ def test_get_explore_source(get_looker_conn, get_view_content, get_view_map):
         source_payload = json.load(f)
 
     assert source_payload == {'sf__cases': {'view_name': 'sfbase__cases',
-                                'base_view_name': 'Redshift.salesforce.cases'},
+                                'base_view_name': 'Redshift.production.salesforce.cases'},
                                 'sf__accounts': {'view_name': 'sfbase__accounts',
-                                'base_view_name': 'Redshift.salesforce.accounts'},
+                                'base_view_name': 'Redshift.production.salesforce.accounts'},
                                 'sf__contacts': {'view_name': 'sfbase__contacts',
-                                'base_view_name': 'Redshift.salesforce.contacts'},
+                                'base_view_name': 'Redshift.production.salesforce.contacts'},
                                 'sf__users': {'view_name': 'sfbase__users',
-                                'base_view_name': 'Redshift.salesforce.users'}}
+                                'base_view_name': 'Redshift.production.salesforce.users'}}
