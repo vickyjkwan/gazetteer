@@ -98,7 +98,7 @@ def test_parse_explores():
 
 
 def test_split_views():
-    
+
     parser.split_views()
 
     with open('../views/sf__leads.json', 'r') as f:
@@ -134,6 +134,13 @@ def test_parse_views():
     
 def test_has_child_folder():
 
-    assert parser.has_child_folder(f'../views/salesforce2') == True
+    assert parser.has_child_folder('../views/salesforce2') == True
  
 
+def test_clean_defolderize():
+
+    parser.clean_defolderize('../views/salesforce2')
+
+    assert '_db_redshift_specific-sf__leads_and_contacts_pdt.view.lkml' in os.listdir('../views/salesforce2')
+    assert '_db_snowflake_specific-sf__leads_and_contacts_pdt.view.lkml' in os.listdir('../views/salesforce2')
+    assert 'sf__users.view.lkml' in os.listdir('../views/salesforce2')

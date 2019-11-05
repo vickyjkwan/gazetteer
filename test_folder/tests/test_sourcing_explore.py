@@ -80,6 +80,7 @@ def test_get_view_source():
                         'sfbase__leads': 'view-sfbase__leads.json', \
                         'sfbase__contacts': 'view-sfbase__contacts.json', \
                         'sfbase__accounts': 'view-sfbase__accounts.json', \
+                        'sf__leads_and_contacts_pdt': 'view-sf__leads_and_contacts_pdt.json', \
                         'sf__users': 'view-sf__users.json'}
 
 
