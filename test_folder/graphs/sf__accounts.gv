@@ -1,19 +1,19 @@
 digraph sf__accounts {
 	sf__accounts [label=sf__accounts]
-	view_sf__cases [label=view_sf__cases]
-	sf__accounts -> view_sf__cases [label=""]
-	"Redshift.production.salesforce.cases" [label="Redshift.production.salesforce.cases"]
-	view_sf__cases -> "Redshift.production.salesforce.cases"
-	view_sf__accounts [label=view_sf__accounts]
-	sf__accounts -> view_sf__accounts [label=""]
-	"Redshift.production.salesforce.accounts" [label="Redshift.production.salesforce.accounts"]
-	view_sf__accounts -> "Redshift.production.salesforce.accounts"
 	view_sf__users [label=view_sf__users]
 	sf__accounts -> view_sf__users [label=""]
 	"Redshift.production.salesforce.users" [label="Redshift.production.salesforce.users"]
 	view_sf__users -> "Redshift.production.salesforce.users"
+	view_sf__accounts [label=view_sf__accounts]
+	sf__accounts -> view_sf__accounts [label=""]
+	"Redshift.production.salesforce.accounts" [label="Redshift.production.salesforce.accounts"]
+	view_sf__accounts -> "Redshift.production.salesforce.accounts"
 	view_sf__contacts [label=view_sf__contacts]
 	sf__accounts -> view_sf__contacts [label=""]
 	"Redshift.production.salesforce.contacts" [label="Redshift.production.salesforce.contacts"]
 	view_sf__contacts -> "Redshift.production.salesforce.contacts"
+	view_sf__cases [label=view_sf__cases]
+	sf__accounts -> view_sf__cases [label=""]
+	"Redshift.production.salesforce.cases" [label="Redshift.production.salesforce.cases"]
+	view_sf__cases -> "Redshift.production.salesforce.cases"
 }

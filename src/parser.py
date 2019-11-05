@@ -72,7 +72,7 @@ def split_explores():
     # breaks down model files into separate explore files
 
     for model in os.listdir(f'../models'):
-        if not model.startswth('.'):
+        if not model.startswith('.'):
             model_folder = model.split('.')[0]
             split_up_file(f'../models/{model}', f"{model_folder}", file_type='explore')
             logging.info(f'Completed splitting model {model_folder} into explores.')
@@ -213,7 +213,7 @@ def split_views():
     # breaks down view file into separate view files based on `view` structures
     for view_folder in next(os.walk(f'../views'))[1]:
         if not view_folder.startswith('.'):
-            print(view_folder)
+            logging.info(f'Splitting views under folder {view_folder}...')
 
             for view in next(os.walk(f'../views/{view_folder}'))[2]:
                 if not view.startswith('.'):
@@ -284,6 +284,26 @@ def source_table(view_path):
     return view_source
 
 
+def has_child_folder(path):
+
+    if next(os.walk(path))[1] == []:
+        return False
+    else:
+        return True
+
+
+def clean_defolderize(path):
+
+    for thing in next(os.walk(path))[1]:
+        if not has_child_folder(f'{path}/{thing}'):
+            for file in os.listdir(f'{path}/{thing}'):
+                if not file.startswith('.'):
+                    os.system(f'cp {path}/{thing}/{file} {path}/{thing}-{file}')
+        else:
+            new_path = f'{path}/{thing}'
+            clean_defolderize(new_path)
+    
+
 def parse_views():
 
     for view in next(os.walk(f'../views'))[2]:  
@@ -297,26 +317,5 @@ def parse_views():
             f = open(f'../maps/view-{view}', "w")
             f.write(result_json)
             f.close()
-
-
-def has_child_folder(path):
-
-    if next(os.walk(path))[1] == []:
-        return False
-    else:
-        return True
-
-
-# def clean_defolderize(path):
-
-#     for thing in next(os.walk(path))[1]:
-
-#         if not has_child_folder(f'{path}/{thing}'):
-#             for file in os.listdir(f'{path}/{thing}'):
-#                 os.system(f'cp {path}/{thing}/{file} {path}/{thing}-{file}')
-
-#         else:
-#             new_path = f'{path}/{thing}'
-#             clean_defolderize(new_path)
 
           
