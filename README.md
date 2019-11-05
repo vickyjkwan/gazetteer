@@ -12,9 +12,11 @@ This is repo contains scripts to manipulate LookML files, and to generate depend
     
     *2)* Parse Explores and retrieve Explore metadata.
 
-    *3)* Split up View files to base Views.
+    *3)* Before processing views, traverse through all child folders, move views to main view folders.
+
+    *4)* Split up View files to base Views.
     
-    *4)* Parse base Views and retrieve View metadata.
+    *5)* Parse base Views and retrieve View metadata.
 
 3. Script `sourcing_explore.py` generates "maps" for each view that is referenced within each explore (with specific connection that contains details about the data warehouse and schemas). 
 
