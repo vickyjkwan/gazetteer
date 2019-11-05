@@ -1,7 +1,7 @@
 digraph sf__accounts_leads_engagio {
 	sf__accounts_leads_engagio [label=sf__accounts_leads_engagio]
 	view_sf__accounts [label=view_sf__accounts]
-	sf__accounts_leads_engagio -> view_sf__accounts [label=data_warehouse]
-	"Redshift.salesforce.accounts" [label="Redshift.salesforce.accounts"]
-	view_sf__accounts -> "Redshift.salesforce.accounts"
+	sf__accounts_leads_engagio -> view_sf__accounts [label=""]
+	"Redshift.production.salesforce.accounts" [label="Redshift.production.salesforce.accounts"]
+	view_sf__accounts -> "Redshift.production.salesforce.accounts"
 }

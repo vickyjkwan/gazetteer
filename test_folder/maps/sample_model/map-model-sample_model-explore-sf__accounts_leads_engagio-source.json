@@ -1,1 +1,1 @@
-{"sf__accounts": {"view_name": "sfbase__accounts", "base_view_name": "Redshift.salesforce.accounts"}}
+{"sf__accounts": {"view_name": "sfbase__accounts", "base_view_name": "Redshift.production.salesforce.accounts"}}

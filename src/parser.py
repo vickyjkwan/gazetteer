@@ -66,7 +66,6 @@ def split_up_file(dir_path, file_path, new_file_folder, file_type):
 
 def split_explores(dir_path):
 
-    os.system('rm models/.DS_Store explores/.DS_Store')
     # dir_path = os.path.dirname(os.path.realpath(__file__))
 
     logging.basicConfig()
@@ -75,9 +74,10 @@ def split_explores(dir_path):
     # breaks down model files into separate explore files
 
     for model in os.listdir(f'{dir_path}/../models'):
-        model_folder = model.split('.')[0]
-        split_up_file(dir_path, f'../models/{model}', f"{model_folder}", file_type='explore')
-        logging.info(f'Completed splitting model {model_folder} into explores.')
+        if not model.startswth('.'):
+            model_folder = model.split('.')[0]
+            split_up_file(dir_path, f'../models/{model}', f"{model_folder}", file_type='explore')
+            logging.info(f'Completed splitting model {model_folder} into explores.')
 
 
 def divider(explore_list):
@@ -169,59 +169,58 @@ def trace_joins(grouped_explore):
 
 def parse_explores(dir_path):
     
-    os.system(f'rm {dir_path}/.DS_Store {dir_path}/../explores/.DS_Store')
-    
     for model_name in os.listdir(f'{dir_path}/../explores'):
+        if not model_name.startswith('.'):
 
-        if f'{model_name}' not in os.listdir(f'{dir_path}/../maps'):
-            os.mkdir(f"{dir_path}/../maps/{model_name}")
-        
-        for explore in os.listdir(f'{dir_path}/../explores/{model_name}'):
-            # read json file
-            with open(f'{dir_path}/../explores/{model_name}/{explore}', 'r') as f:
-                model = json.load(f)
+            if f'{model_name}' not in os.listdir(f'{dir_path}/../maps'):
+                os.mkdir(f"{dir_path}/../maps/{model_name}")
+            
+            for explore in os.listdir(f'{dir_path}/../explores/{model_name}'):
+                # read json file
+                with open(f'{dir_path}/../explores/{model_name}/{explore}', 'r') as f:
+                    model = json.load(f)
 
-            explore_name = list(filter(None, model['explore'][0].split(' ')))[1]
-            explore_list = model['explore']
-            logging.info(f'Starting to parse Explore {explore_name}...')
-        
-            # find the divider of explore level and join level clauses
-            loc_list = divider(explore_list)
+                explore_name = list(filter(None, model['explore'][0].split(' ')))[1]
+                explore_list = model['explore']
+                logging.info(f'Starting to parse Explore {explore_name}...')
+            
+                # find the divider of explore level and join level clauses
+                loc_list = divider(explore_list)
 
-            if len(loc_list) > 1:
-                # parse the raw list, generate a nested and well grouped list representing the explore and join structure
-                grouped_explore = parsing_explore_lines(explore_list, loc_list)
-                # generate a list of all joined base view names
-                explore_joins = trace_joins(grouped_explore)
-            else: 
-                explore_joins = trace_joins([explore_list])
+                if len(loc_list) > 1:
+                    # parse the raw list, generate a nested and well grouped list representing the explore and join structure
+                    grouped_explore = parsing_explore_lines(explore_list, loc_list)
+                    # generate a list of all joined base view names
+                    explore_joins = trace_joins(grouped_explore)
+                else: 
+                    explore_joins = trace_joins([explore_list])
 
-            explore_dict = dict()
-            explore_dict['explore_name'] = explore_name
-            explore_dict['explore_joins'] = list(explore_joins)
-            explore_dict['conn'] = model['conn']
+                explore_dict = dict()
+                explore_dict['explore_name'] = explore_name
+                explore_dict['explore_joins'] = list(explore_joins)
+                explore_dict['conn'] = model['conn']
 
-            explore_json = json.dumps(explore_dict)
-        
-            f = open(f"{dir_path}/../maps/{model_name}/explore-{explore_name}.json","w")
-            f.write(explore_json)
-            f.close()
+                explore_json = json.dumps(explore_dict)
+            
+                f = open(f"{dir_path}/../maps/{model_name}/explore-{explore_name}.json","w")
+                f.write(explore_json)
+                f.close()
 
 
 def split_views(dir_path):
-    # dir_path = os.path.dirname(os.path.realpath(__file__))
-    os.system('rm ../models/.DS_Store ../explores/.DS_Store ../views/.DS_Store')
+    dir_path = os.path.dirname(os.path.realpath(__file__))
 
     logging.basicConfig()
     logging.getLogger().setLevel(logging.INFO)
 
     # breaks down view file into separate view files based on `view` structures
     for view_folder in next(os.walk(f'{dir_path}/../views'))[1]:
-        os.system(f'rm {dir_path}/../views/{view_folder}/.DS_Store')
-        print(view_folder)
-        for view in next(os.walk(f'{dir_path}/../views/{view_folder}'))[2]:
-            os.system('rm .gitkeep')
-            split_up_file(dir_path, f'{dir_path}/../views/{view_folder}/{view}', f"", file_type='view')
+        if not view_folder.startswith('.'):
+            print(view_folder)
+
+            for view in next(os.walk(f'{dir_path}/../views/{view_folder}'))[2]:
+                if not view.startswith('.'):
+                    split_up_file(dir_path, f'{dir_path}/../views/{view_folder}/{view}', f"", file_type='view')
 
 
 def get_derived_table(view_list):
@@ -290,16 +289,16 @@ def source_table(view_path):
 
 def parse_views(dir_path):
     # dir_path = os.path.dirname(os.path.abspath(__file__))
-    os.system(f'rm {dir_path}/.DS_Store {dir_path}/../views/.DS_Store' )
 
-    for view in next(os.walk(f'{dir_path}/../views'))[2]:    
-        logging.info(f'Starting to parse view {view}...')
- 
-        view_path = f'{dir_path}/../views/{view}'
-        result = source_table(view_path)
-        result_json = json.dumps(result)
+    for view in next(os.walk(f'{dir_path}/../views'))[2]:  
+        if not view.startswith('.'):
+            logging.info(f'Starting to parse view {view}...')
+    
+            view_path = f'{dir_path}/../views/{view}'
+            result = source_table(view_path)
+            result_json = json.dumps(result)
 
-        f = open(f'{dir_path}/../maps/view-{view}', "w")
-        f.write(result_json)
-        f.close()
+            f = open(f'{dir_path}/../maps/view-{view}', "w")
+            f.write(result_json)
+            f.close()
             
