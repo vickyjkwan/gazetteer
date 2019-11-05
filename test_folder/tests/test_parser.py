@@ -21,12 +21,11 @@ def get_explore():
 
 def test_split_up_file():
 
-    dir_path = os.path.dirname(os.path.realpath(__file__))
     explore_path = '../models/sample_model.model.lkml'
     new_explore_folder = 'sample_model'
     explore_type = 'explore'
 
-    parser.split_up_file(dir_path, explore_path, new_explore_folder, explore_type)
+    parser.split_up_file(explore_path, new_explore_folder, explore_type)
 
     with open('../explores/sample_model/sf__accounts.json', 'r') as f:
         explore_json = json.load(f) 
@@ -34,7 +33,7 @@ def test_split_up_file():
     view_path = '../views/salesforce/sf__leads.view.lkml'
     new_view_folder = ""
     view_type = 'view'
-    parser.split_up_file(dir_path, view_path, new_view_folder, view_type)
+    parser.split_up_file(view_path, new_view_folder, view_type)
 
     with open('../views/sf__leads.json', 'r') as f:
         view_json = json.load(f)
@@ -45,8 +44,8 @@ def test_split_up_file():
 
 # should I???
 # def test_split_explores():
-#     dir_path = os.path.dirname(os.path.realpath(__file__))
-#     parser.split_explores(dir_path)
+
+#     parser.split_explores()
 #     assert True
     
 
@@ -90,8 +89,7 @@ def test_trace_base(get_explore):
 
 def test_parse_explores():
 
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    parser.parse_explores(dir_path)
+    parser.parse_explores()
 
     with open('../maps/sample_model/explore-sf__accounts_leads_engagio.json', 'r') as f:
         payload = json.load(f)
@@ -100,10 +98,8 @@ def test_parse_explores():
 
 
 def test_split_views():
-
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-
-    parser.split_views(dir_path)
+    
+    parser.split_views()
 
     with open('../views/sf__leads.json', 'r') as f:
         view_json = json.load(f)
@@ -127,8 +123,7 @@ def test_source_table():
 
 def test_parse_views():
 
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    parser.parse_views(dir_path)
+    parser.parse_views()
 
     with open('../maps/view-sf__accounts.json', 'r') as f:
         payload = json.load(f)
@@ -137,3 +132,8 @@ def test_parse_views():
     assert set(payload.keys()) == {'view_name', 'view_type', 'source_table'}
 
     
+def test_has_child_folder():
+
+    assert parser.has_child_folder(f'../views/salesforce2') == True
+ 
+

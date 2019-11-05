@@ -4,7 +4,7 @@ import os
 import logging
 
 
-def split_up_file(dir_path, file_path, new_file_folder, file_type):
+def split_up_file(file_path, new_file_folder, file_type):
     """
     This function separates one model file into explore files in json format, so that each file contains one and only one explore, with connection name and explore name explicitly specified. 
 
@@ -46,10 +46,10 @@ def split_up_file(dir_path, file_path, new_file_folder, file_type):
             file_dict[f'{file_type}_name'] = file_dict[f'{file_type}'][0].split(' ')[1].strip('{')
             file_json = json.dumps(file_dict)
 
-            if new_file_folder not in os.listdir(f'{dir_path}/../{file_type}s'):
-                os.mkdir(f'{dir_path}/../{upper_folder}/{new_file_folder}')
+            if new_file_folder not in os.listdir(f'../{file_type}s'):
+                os.mkdir(f'../{upper_folder}/{new_file_folder}')
 
-            f = open(f"{dir_path}/../{upper_folder}/{new_file_folder}/{file_dict[f'{file_type}_name']}.json","w")
+            f = open(f"../{upper_folder}/{new_file_folder}/{file_dict[f'{file_type}_name']}.json","w")
             f.write(file_json)
             f.close()
             
@@ -59,24 +59,22 @@ def split_up_file(dir_path, file_path, new_file_folder, file_type):
             file_dict[f'{file_type}_name'] = file_dict[f'{file_type}'][0].split(' ')[1].strip('{')
             file_json = json.dumps(file_dict)
 
-            f = open(f"{dir_path}/../{upper_folder}/{file_dict[f'{file_type}_name']}.json","w")
+            f = open(f"../{upper_folder}/{file_dict[f'{file_type}_name']}.json","w")
             f.write(file_json)
             f.close()
         
 
-def split_explores(dir_path):
-
-    # dir_path = os.path.dirname(os.path.realpath(__file__))
+def split_explores():
 
     logging.basicConfig()
     logging.getLogger().setLevel(logging.INFO)
 
     # breaks down model files into separate explore files
 
-    for model in os.listdir(f'{dir_path}/../models'):
+    for model in os.listdir(f'../models'):
         if not model.startswth('.'):
             model_folder = model.split('.')[0]
-            split_up_file(dir_path, f'../models/{model}', f"{model_folder}", file_type='explore')
+            split_up_file(f'../models/{model}', f"{model_folder}", file_type='explore')
             logging.info(f'Completed splitting model {model_folder} into explores.')
 
 
@@ -167,17 +165,17 @@ def trace_joins(grouped_explore):
     return joins
 
 
-def parse_explores(dir_path):
+def parse_explores():
     
-    for model_name in os.listdir(f'{dir_path}/../explores'):
+    for model_name in os.listdir(f'../explores'):
         if not model_name.startswith('.'):
 
-            if f'{model_name}' not in os.listdir(f'{dir_path}/../maps'):
-                os.mkdir(f"{dir_path}/../maps/{model_name}")
+            if f'{model_name}' not in os.listdir(f'../maps'):
+                os.mkdir(f"../maps/{model_name}")
             
-            for explore in os.listdir(f'{dir_path}/../explores/{model_name}'):
+            for explore in os.listdir(f'../explores/{model_name}'):
                 # read json file
-                with open(f'{dir_path}/../explores/{model_name}/{explore}', 'r') as f:
+                with open(f'../explores/{model_name}/{explore}', 'r') as f:
                     model = json.load(f)
 
                 explore_name = list(filter(None, model['explore'][0].split(' ')))[1]
@@ -202,25 +200,24 @@ def parse_explores(dir_path):
 
                 explore_json = json.dumps(explore_dict)
             
-                f = open(f"{dir_path}/../maps/{model_name}/explore-{explore_name}.json","w")
+                f = open(f"../maps/{model_name}/explore-{explore_name}.json","w")
                 f.write(explore_json)
                 f.close()
 
 
-def split_views(dir_path):
-    dir_path = os.path.dirname(os.path.realpath(__file__))
+def split_views():
 
     logging.basicConfig()
     logging.getLogger().setLevel(logging.INFO)
 
     # breaks down view file into separate view files based on `view` structures
-    for view_folder in next(os.walk(f'{dir_path}/../views'))[1]:
+    for view_folder in next(os.walk(f'../views'))[1]:
         if not view_folder.startswith('.'):
             print(view_folder)
 
-            for view in next(os.walk(f'{dir_path}/../views/{view_folder}'))[2]:
+            for view in next(os.walk(f'../views/{view_folder}'))[2]:
                 if not view.startswith('.'):
-                    split_up_file(dir_path, f'{dir_path}/../views/{view_folder}/{view}', f"", file_type='view')
+                    split_up_file(f'../views/{view_folder}/{view}', f"", file_type='view')
 
 
 def get_derived_table(view_list):
@@ -287,18 +284,39 @@ def source_table(view_path):
     return view_source
 
 
-def parse_views(dir_path):
-    # dir_path = os.path.dirname(os.path.abspath(__file__))
+def parse_views():
 
-    for view in next(os.walk(f'{dir_path}/../views'))[2]:  
+    for view in next(os.walk(f'../views'))[2]:  
         if not view.startswith('.'):
             logging.info(f'Starting to parse view {view}...')
     
-            view_path = f'{dir_path}/../views/{view}'
+            view_path = f'../views/{view}'
             result = source_table(view_path)
             result_json = json.dumps(result)
 
-            f = open(f'{dir_path}/../maps/view-{view}', "w")
+            f = open(f'../maps/view-{view}', "w")
             f.write(result_json)
             f.close()
-            
+
+
+def has_child_folder(path):
+
+    if next(os.walk(path))[1] == []:
+        return False
+    else:
+        return True
+
+
+# def clean_defolderize(path):
+
+#     for thing in next(os.walk(path))[1]:
+
+#         if not has_child_folder(f'{path}/{thing}'):
+#             for file in os.listdir(f'{path}/{thing}'):
+#                 os.system(f'cp {path}/{thing}/{file} {path}/{thing}-{file}')
+
+#         else:
+#             new_path = f'{path}/{thing}'
+#             clean_defolderize(new_path)
+
+          
