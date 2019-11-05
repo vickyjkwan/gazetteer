@@ -7,14 +7,13 @@ from src import sourcing_explore
 
 
 def test_get_connections():
-    looker_connections = sourcing_explore.get_connections(domain='https://docker.looker.com:19999', url='/api/3.1/connections')
+    looker_connections = sourcing_explore.get_connections(domain='https://docker.looker.com:19999', url='/api/3.1/connections', dir_path='../')
 
     assert 'snowflake_segment' in looker_connections.keys()
 
 
 def test_get_true_source(get_looker_conn, get_view_payload, get_view_map):
 
-    dir_path = '.' 
     view_content = get_view_payload
     view_payload = view_content['sf__accounts']
     explore = {"conn": "data_warehouse", \
@@ -23,7 +22,7 @@ def test_get_true_source(get_looker_conn, get_view_payload, get_view_map):
     connection_map = get_looker_conn
     view_map = get_view_map
 
-    source_payload = sourcing_explore.get_true_source(dir_path, view_payload, explore, connection_map, view_map)
+    source_payload = sourcing_explore.get_true_source(view_payload, explore, connection_map, view_map)
 
     assert source_payload == ('sfbase__accounts', 'Redshift.production.salesforce.accounts')
 
@@ -68,9 +67,7 @@ def test_get_conn_db(get_looker_conn):
 
 def test_get_view_source():
 
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-
-    view_map, _ = sourcing_explore.get_view_source(dir_path) 
+    view_map, _ = sourcing_explore.get_view_source() 
 
     assert view_map == {'sf__leads': 'view-sf__leads.json', \
                         'sf__cases': 'view-sf__cases.json', \
@@ -89,12 +86,12 @@ def test_get_view_source():
 def test_get_explore_source(get_looker_conn, get_view_content, get_view_map):
     model_name = 'sample_model'
     explore_path = '../maps/sample_model/explore-sf__accounts.json'
-    dir_path = os.path.dirname(os.path.realpath(__file__))
+
     connection_map=get_looker_conn
 
-    sourcing_explore.get_explore_source(model_name, explore_path, dir_path, view_content=get_view_content, view_map=get_view_map, connection_map=connection_map)
+    sourcing_explore.get_explore_source(model_name, explore_path, view_content=get_view_content, view_map=get_view_map, connection_map=connection_map)
     
-    with open(f"{dir_path}/../maps/{model_name}/map-model-{model_name}-explore-sf__accounts-source.json", 'r') as f:
+    with open(f"../maps/{model_name}/map-model-{model_name}-explore-sf__accounts-source.json", 'r') as f:
         source_payload = json.load(f)
 
     assert source_payload == {'sf__cases': {'view_name': 'sfbase__cases',

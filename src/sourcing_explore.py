@@ -9,7 +9,6 @@ import requests
 def get_connections(domain, url, dir_path=None):
 
     conn_dict = dict()
-    
     dir_path = os.path.dirname(os.path.abspath(__file__))
 
     with open(f'{dir_path}/../.secrets/looker_secrets.json') as f:
@@ -57,16 +56,16 @@ def get_conn_db(explore, connection_map):
     return provider, database
 
 ####### need to add NDT, and derived table ################
-def get_true_source(dir_path, view_payload, explore, connection_map, view_map):
+def get_true_source(view_payload, explore, connection_map, view_map):
     
     if isinstance(view_payload, dict):
 
         if view_payload['view_type'] == 'extension': 
 
             new_view_name = look_up_target_view(view_payload['source_table'], view_map=view_map)
-            with open(f'{dir_path}/../maps/{new_view_name}', 'r') as f:
+            with open(f'../maps/{new_view_name}', 'r') as f:
                 new_view_payload = json.load(f)
-            return get_true_source(dir_path, new_view_payload, explore, connection_map, view_map)
+            return get_true_source(new_view_payload, explore, connection_map, view_map)
             
         elif view_payload['view_type'] == 'sql_table_name': 
 
@@ -95,21 +94,21 @@ def get_true_source(dir_path, view_payload, explore, connection_map, view_map):
     return view_payload['view_name'], true_source
 
 
-def get_view_source(dir_path):
+def get_view_source():
 
     view_content = dict()
     view_map = dict()
-    for view in next(os.walk(f'{dir_path}/../maps'))[2]:
+    for view in next(os.walk(f'../maps'))[2]:
         if view.startswith('view'):
             logging.info(f'Getting source tables for view {view}...')
             view_map[view.split('-')[1].split('.')[0]] = view
-            with open(f'{dir_path}/../maps/{view}','r') as f:
+            with open(f'../maps/{view}','r') as f:
                 payload = json.load(f)
                 view_content[payload['view_name']] = payload
 
     return view_map, view_content
 
-def get_explore_source(model_name, explore_path, dir_path, view_content, view_map, connection_map):
+def get_explore_source(model_name, explore_path, view_content, view_map, connection_map):
     start = time.process_time()
     
     logging.basicConfig()
@@ -122,13 +121,13 @@ def get_explore_source(model_name, explore_path, dir_path, view_content, view_ma
     for view_name,view_payload in view_content.items():
         logging.info(f"Processing View source {view_payload['view_name']}...")
         if view_name in explore['explore_joins']:
-            base_view_name, source_table = get_true_source(f'{dir_path}', view_payload, explore=explore, connection_map=connection_map, view_map=view_map)
+            base_view_name, source_table = get_true_source(view_payload, explore=explore, connection_map=connection_map, view_map=view_map)
             logging.info(f"view name: {view_name} , base view name: {base_view_name}, source: {source_table}")
             source_payload[view_name] = dict()
             source_payload[view_name]['view_name'] = base_view_name
             source_payload[view_name]['base_view_name'] = source_table  
 
-    with open(f"{dir_path}/../maps/{model_name}/map-model-{model_name}-explore-{explore['explore_name']}-source.json", 'w') as f:
+    with open(f"../maps/{model_name}/map-model-{model_name}-explore-{explore['explore_name']}-source.json", 'w') as f:
         json.dump(source_payload, f)
 
     end = time.process_time()
@@ -138,14 +137,13 @@ def get_explore_source(model_name, explore_path, dir_path, view_content, view_ma
 
 if __name__ == "__main__":
      
-    dir_path = os.path.dirname(os.path.realpath(__file__))
     connection_map = get_connections(domain='https://docker.looker.com:19999', url='/api/3.1/connections')
-    view_map, view_content = get_view_source(dir_path)
+    view_map, view_content = get_view_source()
 
-    # for model_folder in next(os.walk(f'{dir_path}/../maps'))[1]:
+    # for model_folder in next(os.walk(f'../maps'))[1]:
     model_folder = 'snowflake_salesforce'
 
-    for explore_file in os.listdir(f'{dir_path}/../maps/{model_folder}'):
+    for explore_file in os.listdir(f'../maps/{model_folder}'):
         if explore_file.startswith('explore-'):
             print(f'Starting to get source tables for model {model_folder} explore {explore_file}...')
-            get_explore_source(model_folder, f'{dir_path}/../maps/{model_folder}/{explore_file}', dir_path=dir_path, view_map=view_map, view_content=view_content, connection_map=connection_map)
+            get_explore_source(model_folder, f'../maps/{model_folder}/{explore_file}', view_map=view_map, view_content=view_content, connection_map=connection_map)

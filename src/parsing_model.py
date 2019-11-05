@@ -6,20 +6,18 @@ from parser import split_explores, parse_explores, split_views, parse_views
 
 def main():
 
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-
     start = time.process_time()
 
-    split_explores(dir_path)
+    split_explores()
     logging.info("Split up Model files to Explore paylods.")
 
-    parse_explores(dir_path)
+    parse_explores()
     logging.info("Completed parsing explores and retrieving explore metadata.")
 
-    split_views(dir_path)
+    split_views()
     logging.info("Split up View files to base views.")
 
-    parse_views(dir_path)
+    parse_views()
     logging.info("Completed parsing base views and retrieving view metadata.")
 
     end = time.process_time()
