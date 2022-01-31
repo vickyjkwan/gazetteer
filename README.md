@@ -2,7 +2,7 @@
 
 This is repo contains scripts to manipulate LookML files, and to generate dependency graphs for each explore.
 
-# Current worlflow:
+# Current workflow:
 
 1. Script `parser.py` contains many file actions, including splitting up views into view files containing single views, splitting up explore files into single explores, getting joined views from explore statements.
 
